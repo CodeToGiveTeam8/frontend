@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../CSSstyles/OperationsHome.css';
+import Headerl from '../Headerl';
 
 const OperationsHome = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,6 +35,8 @@ const OperationsHome = () => {
   );
 
   return (
+    <div>
+      <Headerl />
     <div className='ophome'>
       <input 
       type="text" 
@@ -67,6 +70,7 @@ const OperationsHome = () => {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };

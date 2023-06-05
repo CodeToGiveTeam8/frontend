@@ -4,10 +4,10 @@
     align-items: center;
     height: 150vh;
     background-color: #ffffff;
-    margin: auto;
   }
   
-  form {
+  .form-register {
+    margin-top: -100px;
     width: 600px;
     padding: 40px;
     border: 1px solid #ccc;

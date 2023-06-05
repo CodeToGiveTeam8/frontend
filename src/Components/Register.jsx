@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CSSstyles/Register.css';
+import Headerl from './Headerl';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -27,8 +28,10 @@ const Register = () => {
   };
 
   return (
+    <div>
+    <Headerl/>
     <div className="register">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form-register">
         <h2>Register</h2>
         <div className="row">
         <div className="column">
@@ -117,6 +120,7 @@ const Register = () => {
         </div>
         <button type="submit">Register</button>
       </form>
+      </div>
     </div>
   );
 };
