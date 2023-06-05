@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../CSSstyles/OperationsDash.css';
+import Headerl from '../Headerl';
 
 const OperationsDashboard = () => {
   const [progress, setProgress] = useState({
@@ -48,7 +49,9 @@ const OperationsDashboard = () => {
   };
 
   return (
-    <div className="container">
+    <div>
+    <Headerl />
+    <div className='container'>
       <div className="row">
         <div className="col">
           <div className="progress">Progress of Categories</div>
@@ -108,6 +111,7 @@ const OperationsDashboard = () => {
         <div className="col">
           <div className="graph">Graph 2</div>
         </div>
+      </div>
       </div>
     </div>
   );
