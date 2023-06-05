@@ -18,8 +18,7 @@ import Headerl from './Components/Headerl';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Headerl />
+     
       <BrowserRouter>
           <Routes>
           {/* not sure about the which page is home page */}
@@ -39,7 +38,7 @@ function App() {
             <Route exact path="/operationshome" element={<OperationsHome />} />
           </Routes>
         </BrowserRouter>
-      </header>
+  
     </div>
   );
 }
