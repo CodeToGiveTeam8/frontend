@@ -15,19 +15,31 @@ const Register = () => {
     // Handle form submission here
   };
 
-  const handlePhotoChange = (e) => {
-    setPhoto(e.target.files[0]);
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = (event) => {
+      setPhoto(event.target.result);
+    };
+  
+    reader.readAsDataURL(file);
   };
 
   return (
     <div className="register">
       <form onSubmit={handleSubmit}>
         <h2>Register</h2>
+        <div className="row">
+        <div className="column">
+
+       
         <div className="form-group">
           <label htmlFor="name">Name</label>
           <input
             type="text"
             id="name"
+            required
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -36,6 +48,7 @@ const Register = () => {
           <label htmlFor="dob">Date of Birth</label>
           <input
             type="date"
+            required
             id="dob"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
@@ -46,6 +59,7 @@ const Register = () => {
           <input
             type="email"
             id="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -55,6 +69,7 @@ const Register = () => {
           <input
             type="tel"
             id="mobile"
+            required
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
           />
@@ -64,6 +79,7 @@ const Register = () => {
           <input
             type="password"
             id="password"
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -73,18 +89,31 @@ const Register = () => {
           <input
             type="text"
             id="username"
+            required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="photo">Upload a Photo</label>
-          <input
-            type="file"
-            id="photo"
-            accept="image/*"
-            onChange={handlePhotoChange}
-          />
+        </div>
+        <div className="column">
+        <div className="photo-upload">
+  {photo ? (
+    <img src={photo} alt="Preview" className="photo-preview" />
+  ) : (
+    <>
+      <label htmlFor="photo-upload" className="upload-label">
+        Click or drag photo to upload
+      </label>
+      <input
+        type="file"
+        id="photo-upload"
+        onChange={handlePhotoChange}
+        accept="image/*"
+      />
+    </>
+  )}
+</div>
+        </div>
         </div>
         <button type="submit">Register</button>
       </form>
