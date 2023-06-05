@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import './CSSstyles/Register.css';
 
 const Register = () => {
@@ -8,18 +9,53 @@ const Register = () => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [gender,setGender] = useState(' ');
   const [photo, setPhoto] = useState(null);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    //I've just added some validations add more
+    if(name.trim().length == 0){
+      console.log("throw error...name is bad");
+    }else if(!(email.includes('@'))){
+      console.log("throw error....email is bad")
+    }
+    else if(mobile.trim().length != 10){
+      console.log("throw error...mobile is bad...")
+    }
+
+    //body to send for backend
+    const objectBody = {
+      name,dob,email,mobile,password,username,photo,gender,role:'GRASSROOT'
+    }
+    //the config object
+    const configObject = {
+      url:"/user/register",
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:objectBody
+    }
+    const responseData = await fetch(configObject.url,{
+      method:configObject.method?configObject.method:'GET',
+      body:configObject.body?JSON.stringify(configObject.body):null,
+      headers:configObject.headers?configObject.headers:{},
+    })
+    //if registration is successful,redirect to login
+    if(responseData.status === 200){
+      navigate("/login");
+    }
     // Handle form submission here
   };
 
   const handlePhotoChange = (event) => {
+    console.log(event.target.files[0])
     const file = event.target.files[0];
     const reader = new FileReader();
   
     reader.onload = (event) => {
+      console.log(event.target)
       setPhoto(event.target.result);
     };
   
@@ -53,6 +89,14 @@ const Register = () => {
             value={dob}
             onChange={(e) => setDob(e.target.value)}
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gender">Gender</label>
+          <select className="form-control" onChange={(e)=>{setGender(e.target.value)}} defaultValue={"MALE"}>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+          </select>
         </div>
         <div className="form-group">
           <label htmlFor="email">Email</label>
