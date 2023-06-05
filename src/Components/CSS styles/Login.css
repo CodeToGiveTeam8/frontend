@@ -1,0 +1,79 @@
+.login-box {
+    margin-top: 7%;
+    margin-left: 28%;
+    /* padding-right: 6%;
+    padding-left: 6%; */
+    width: 3%;
+  }
+  
+  .welcome {
+    margin-bottom: 20px;
+    padding-right: 7%;
+    font-family: 'Poppins';
+    font-size: 1rem;
+  }
+  
+  .email {
+    text-align: left;
+    padding-top: 0.5rem;
+    padding-bottom: 0.4rem;
+  }
+  
+  .pass-box {
+    width: 63%;
+    padding-left: 15%;
+  }
+  .p-box{
+    height: 0.6rem;
+  }
+  
+  .box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 75%;
+    margin-bottom: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    height: 1rem;
+  }
+  
+  .category {
+    text-align: left;
+    padding-top: 2rem;
+    padding-left: 15%;
+  }
+  
+  
+  .loginbutton {
+        display: block;
+        margin: 10% auto 20px 15%;
+        padding: 10px 20px;
+        background-color: #E95CA1;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 67%;          
+  }
+  
+  .loginbutton:hover {
+    background-color: #0056b3;
+  }
+  
+  .reg-text {
+    text-align: center;
+    padding-top: 0.2rem;
+    font-size: 0.7rem;
+  }
+  .toggle-container {
+    display: flex;
+  }
+  
+  .toggle-container label {
+    margin-top: 2%;
+    margin-right: 30px;
+  }
+  .in-box{
+    padding-left: 15%;
+  }
