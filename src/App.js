@@ -16,7 +16,7 @@ import OperationsHome from "./Components/Operations/OperationsHome";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+     
       <BrowserRouter>
           <Routes>
           {/* not sure about the which page is home page */}
@@ -35,7 +35,7 @@ function App() {
             <Route exact path="/operationshome" element={<OperationsHome />} />
           </Routes>
         </BrowserRouter>
-      </header>
+  
     </div>
   );
 }
