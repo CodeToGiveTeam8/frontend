@@ -1,0 +1,87 @@
+.container {
+    margin: 10% 10% 0 10%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .col {
+    flex-basis: 48%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .progress {
+    margin-bottom: 10px;
+  }
+  
+  .progress-bar-container {
+    margin: 10px;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .progress-bar-fill.abandon {
+    background-color: var(--abandon-color, #FF5722);
+  }
+  
+  .progress-bar-fill.surrender {
+    background-color: var(--surrender-color, #FFC107);
+  }
+  
+  .progress-bar-fill.admitted {
+    background-color: var(--admitted-color, #4CAF50);
+  }
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .table input[type='checkbox'] {
+    cursor: pointer;
+  }
+  
+  .table input[type='checkbox']:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .graph {
+    height: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
