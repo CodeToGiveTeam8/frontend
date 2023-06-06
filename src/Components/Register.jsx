@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import "./CSSstyles/Register.css";
 import Headerl from "./Headerl";
 
@@ -13,8 +14,40 @@ const Register = () => {
   const [role, setRole] = useState("");
   const [gender, setGender] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    //I've just added some validations add more
+    if(name.trim().length == 0){
+      console.log("throw error...name is bad");
+    }else if(!(email.includes('@'))){
+      console.log("throw error....email is bad")
+    }
+    else if(mobile.trim().length != 10){
+      console.log("throw error...mobile is bad...")
+    }
+
+    //body to send for backend
+    const objectBody = {
+      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT'
+    }
+    //the config object
+    const configObject = {
+      url:"/user/register",
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:objectBody
+    }
+    const responseData = await fetch(configObject.url,{
+      method:configObject.method?configObject.method:'GET',
+      body:configObject.body?JSON.stringify(configObject.body):null,
+      headers:configObject.headers?configObject.headers:{},
+    })
+    //if registration is successful,redirect to login
+    if(responseData.status === 200){
+      navigate("/login");
+    }
     // Handle form submission here
     if (password === confirmPassword) {
       // Passwords match, do something
@@ -24,10 +57,12 @@ const Register = () => {
   };
 
   const handlePhotoChange = (event) => {
+    console.log(event.target.files[0])
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = (event) => {
+      console.log(event.target)
       setPhoto(event.target.result);
     };
 

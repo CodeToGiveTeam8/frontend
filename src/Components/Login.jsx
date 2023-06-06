@@ -1,111 +1,79 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import './CSSstyles/Login.css';
-import Headerl from './Headerl';
+import {React,useState} from 'react'
+import {useNavigate} from "react-router-dom";
+import Cookies from 'universal-cookie';
 
 
-const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+function Login() {
+
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
   const navigate = useNavigate();
+  const cookies = new Cookies();  //needed to parse cookies
 
-  const handleLogin = () => {
-    // You can implement your login logic here
-    // For simplicity, let's just check if the username and password match "admin"
-    if (username === 'admin' && password === 'admin') {
-      // If the login is successful, redirect to the corresponding page based on the selected category
-      switch (selectedCategory) {
-        case 'representative':
-          navigate('/representative-page');
-          break;
-        case 'team-lead':
-          navigate('/team-lead-page');
-          break;
-        case 'operations':
-          navigate('/operations-page');
-          break;
-        default:
-          alert('Invalid category');
-      }
-    } else {
-      alert('Invalid credentials');
+  const addCookies = (accessToken)=>{
+    cookies.set("accessToken",accessToken,{ path: '/' })//path : '/' means cookie can be accessible everywhere in the app
+  }
+
+  const getAccessToken = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
+  const handleSubmit = async(e)=>{
+    e.preventDefault();
+    const objectBody = {
+      email,password
     }
-  };
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
-
+    const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+    const configObject = {
+      url:"/user/login",
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization': token},
+      body:objectBody
+    }
+    const responseData = await getAccessToken(configObject)
+    const accessToken = responseData['access-token']
+    addCookies(accessToken)
+    //navigating after successful login
+    navigate('/grassDashboard');
+  }
   return (
-    <div>
-    <Headerl/>
-    <div className="login-box">
-      <form>
-      <h3 className="welcome">Enter your credentials to login!</h3>
-        <div className='in-box'>
-          <label className="email">Email:</label>
+    <div className="register">
+      <form onSubmit={handleSubmit}>
+        <h2>Login</h2>
+        <div className="row">
+        <div className="column"> 
+        <div className="form-group">
+          <label htmlFor="name">Email</label>
           <input
-            className="box"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className="pass-box">
-          <label className="email">Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
           <input
-            className='p-box'
             type="password"
+            id="password"
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="category">
-          <label>Role:</label>
-          <div className="toggle-container">
-            <label>
-              <input
-                type="radio"
-                name="category"
-                value="representative"
-                checked={selectedCategory === 'representative'}
-                onChange={handleCategoryChange}
-              />
-              Representative
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="category"
-                value="team-lead"
-                checked={selectedCategory === 'team-lead'}
-                onChange={handleCategoryChange}
-              />
-              Team Lead
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="category"
-                value="operations"
-                checked={selectedCategory === 'operations'}
-                onChange={handleCategoryChange}
-              />
-              Operations
-            </label>
-          </div>
         </div>
-        <button className="loginbutton" type="button" onClick={handleLogin}>
-          Login
-        </button>
-        <p className="reg-text">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+        </div>
+        <button type="submit">Login</button>
       </form>
     </div>
-    </div>
   );
-};
+}
 
 export default Login;
