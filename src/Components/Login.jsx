@@ -38,6 +38,8 @@ const Login = () => {
   };
 
   return (
+    <div>
+    <Headerl/>
     <div className="login-box">
       <form>
       <h3 className="welcome">Enter your credentials to login!</h3>
@@ -101,6 +103,7 @@ const Login = () => {
           Don't have an account? <Link to="/register">Register</Link>
         </p>
       </form>
+    </div>
     </div>
   );
 };
