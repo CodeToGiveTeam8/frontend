@@ -47,9 +47,7 @@ function Login() {
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         <div className="row">
-        <div className="column">
-
-       
+        <div className="column"> 
         <div className="form-group">
           <label htmlFor="name">Email</label>
           <input
@@ -78,4 +76,4 @@ function Login() {
   );
 }
 
-export default Login
+export default Login;
