@@ -124,8 +124,8 @@ const Register = () => {
               <div  className="dropdowns">
                 <label htmlFor="role" >Role</label>
                 <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="GRASSROOT">Grassroot</option>
                   <option value="OPERATION">Operation</option>
-                  <option value="GRASSROOT">Grassroot</option>
                   <option value="TEAMLEAD">Team Lead</option>
                 </select>
                 <label htmlFor="gender">Gender</label>
