@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import {useNavigate} from "react-router-dom";
+import Cookies from 'universal-cookie';
 import "./CSSstyles/Register.css";
 import Headerl from "./Headerl";
+import bgimage from "../Images/reg.jpg"
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -19,12 +21,12 @@ const Register = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     //I've just added some validations add more
-    if(name.trim().length == 0){
+    if(name.trim().length === 0){
       console.log("throw error...name is bad");
     }else if(!(email.includes('@'))){
       console.log("throw error....email is bad")
     }
-    else if(mobile.trim().length != 10){
+    else if(mobile.trim().length !== 10){
       console.log("throw error...mobile is bad...")
     }
 
@@ -70,7 +72,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center"}}>
       <Headerl />
       <div className="register">
         <form onSubmit={handleSubmit} className="form-register">
@@ -172,7 +174,7 @@ const Register = () => {
               </div>
             </div>
           </div>
-          <button type="submit">Register</button>
+          <button type="submit" className='Register-sub'>Register</button>
         </form>
       </div>
     </div>

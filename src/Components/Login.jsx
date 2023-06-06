@@ -1,7 +1,9 @@
 import {React,useState} from 'react'
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
-
+import "./CSSstyles/Login.css";
+import Headerl from "./Headerl";
+import bgimage from "../Images/loginpage.jpg"
 
 function Login() {
 
@@ -43,9 +45,11 @@ function Login() {
     navigate('/grassDashboard');
   }
   return (
-    <div className="register">
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+    <div className='login-main' style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center" }}>
+      <Headerl/>
+      <div className='login'>
+      <form onSubmit={handleSubmit} className="box">
+        <h2 className='headinglogin'>Login</h2>
         <div className="row">
         <div className="column"> 
         <div className="form-group">
@@ -70,8 +74,13 @@ function Login() {
         </div>
         </div>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" className='login-sub'>Login</button>
       </form>
+      <p >
+                If you do not have an account, {" "}
+                <Link to="/register">Register here</Link>.
+              </p>
+</div>
     </div>
   );
 }
