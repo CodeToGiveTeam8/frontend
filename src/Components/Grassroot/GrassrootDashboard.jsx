@@ -43,7 +43,7 @@ const GrassrootDashboard = () => {
   });
 
   return (
-    <div style={{ backgroundColor:"white"}}>
+    <div style={{ backgroundColor:"white" }}>
     <NavBar/>
       <div className='ophome'>
         <input 

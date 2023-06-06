@@ -45,7 +45,7 @@ function Login() {
     navigate('/grassDashboard');
   }
   return (
-    <div style={{ backgroundImage:`url(${bgimagelogin})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center" }}>
+    <div >
       <Headerl/>
       <div className='login-inner'>
       <form onSubmit={handleSubmit} className="box">
