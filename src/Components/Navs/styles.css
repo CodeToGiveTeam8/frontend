@@ -19,6 +19,7 @@
     margin-left: 1rem;
     margin-right: 1rem;
     color: white;
+    text-decoration: none;
   }
   
   .navbar-dropdown-menu {
@@ -42,6 +43,8 @@
   }
   
   .navbar-dropdown-toggle {
+    padding: 10px;
+    margin-right: 30px;
     color: white;
     font-size: 1rem;
     border: none;

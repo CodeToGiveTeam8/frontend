@@ -33,7 +33,7 @@ function Login() {
     }
     const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
     const configObject = {
-      url:"/user/login",
+      url:"http://localhost:8081/user/login",
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization': token},
       body:objectBody
