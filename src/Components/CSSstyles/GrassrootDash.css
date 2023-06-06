@@ -1,0 +1,36 @@
+.ophome{
+    margin-top: 10%;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    color: black;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .search-bar {
+    padding: 8px;
+    margin-bottom: 16px;
+    width: 50%;
+    box-sizing: border-box;
+    border: 2px solid #E95CA1;
+    background-color: #E95CA1;
+    border-radius: 20px;
+  }
+  
+  .search-bar:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px 0 rgba(76, 175, 80, 0.4);
+  }

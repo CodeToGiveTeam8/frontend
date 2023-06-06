@@ -9,7 +9,7 @@ const OperationsHome = () => {
       id: 1,
       name: 'John Doe',
       category: 'Abandon',
-      caseProgress: 40,
+      caseProgress: 'Publish photo of the child in 2 National News Papers and 1 National TV Channel (DD)',
       deadline: '2023-06-30',
       socialWorker: 'Jane Smith',
       orphanage: 'Hope House'
@@ -18,7 +18,7 @@ const OperationsHome = () => {
       id: 2,
       name: 'Jane Smith',
       category: 'Surrender',
-      caseProgress: 80,
+      caseProgress: 'Contact Local Police Department to find the biological parents',
       deadline: '2023-07-15',
       socialWorker: 'John Doe',
       orphanage: 'Sunshine Home'
@@ -30,9 +30,16 @@ const OperationsHome = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = data.filter((item) => {
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return (
+      item.id.toString().includes(lowercaseQuery) ||
+      item.name.toLowerCase().includes(lowercaseQuery) ||
+      item.category.toLowerCase().includes(lowercaseQuery) ||
+      item.socialWorker.toLowerCase().includes(lowercaseQuery) ||
+      item.orphanage.toLowerCase().includes(lowercaseQuery)
+    );
+  });
 
   return (
     <div>
@@ -40,7 +47,7 @@ const OperationsHome = () => {
     <div className='ophome'>
       <input 
       type="text" 
-      placeholder='Search by name...'
+      placeholder='Search'
       value={searchQuery} 
       onChange={handleSearch} 
       className="search-bar" />
@@ -62,7 +69,7 @@ const OperationsHome = () => {
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.category}</td>
-              <td>{item.caseProgress}%</td>
+              <td>{item.caseProgress}</td>
               <td>{item.deadline}</td>
               <td>{item.socialWorker}</td>
               <td>{item.orphanage}</td>
