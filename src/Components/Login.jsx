@@ -3,7 +3,7 @@ import {useNavigate, Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import "./CSSstyles/Login.css";
 import Headerl from "./Headerl";
-import bgimagelogin from "../Images/loginpage.jpg"
+// import bgimagelogin from "../Images/loginpage.jpg"
 
 function Login() {
 
