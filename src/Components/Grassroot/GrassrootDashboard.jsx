@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import '../CSSstyles/GrassrootDash.css';
+import NavBar from '../Navs/grassrootnav';
+
 
 const GrassrootDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,7 +43,8 @@ const GrassrootDashboard = () => {
   });
 
   return (
-    <div>
+    <div style={{ backgroundColor:"white"}}>
+    <NavBar/>
       <div className='ophome'>
         <input 
           type="text" 

@@ -36,7 +36,7 @@ const Register = () => {
     }
     //the config object
     const configObject = {
-      url:"/user/register",
+      url:"http://localhost:8081/user/register",
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:objectBody
@@ -46,6 +46,7 @@ const Register = () => {
       body:configObject.body?JSON.stringify(configObject.body):null,
       headers:configObject.headers?configObject.headers:{},
     })
+    console.log(responseData)
     //if registration is successful,redirect to login
     if(responseData.status === 200){
       navigate("/login");

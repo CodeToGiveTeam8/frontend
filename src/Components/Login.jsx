@@ -3,7 +3,7 @@ import {useNavigate, Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import "./CSSstyles/Login.css";
 import Headerl from "./Headerl";
-import bgimage from "../Images/loginpage.jpg"
+import bgimagelogin from "../Images/loginpage.jpg"
 
 function Login() {
 
@@ -45,9 +45,9 @@ function Login() {
     navigate('/grassDashboard');
   }
   return (
-    <div className='login-main' style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center" }}>
+    <div style={{ backgroundImage:`url(${bgimagelogin})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center" }}>
       <Headerl/>
-      <div className='login'>
+      <div className='login-inner'>
       <form onSubmit={handleSubmit} className="box">
         <h2 className='headinglogin'>Login</h2>
         <div className="row">
