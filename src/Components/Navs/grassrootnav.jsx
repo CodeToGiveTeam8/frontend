@@ -2,6 +2,13 @@ import { React, useState } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import logo from "../../Images/logoBAT.png";
 import AddEntry from "../AddEntry";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import "./styles.css";
 
 const NavBar = () => {
@@ -17,11 +24,22 @@ const NavBar = () => {
     document.body.classList.remove("active-modal");
   }
 
+  const [open, setOpen] = useState(false);
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    // Submit the form data to the backend here
+  const handleClickOpen = () => {
+    setOpen(true);
   };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmitEmail = (e) => {
+    e.preventDefault();
+    console.log("Email submitted");
+  };
+
+
 
   const handleItemSelect = (eventKey) => {
     // Handle language selection logic here
@@ -45,9 +63,10 @@ const NavBar = () => {
         </Nav.Item>
 
         <Nav.Item>
-          <Nav.Link className="navbar-link" href="#">
+          <Nav.Link className="navbar-link" onClick={handleClickOpen}>
             Get Updates
           </Nav.Link>
+          
         </Nav.Item>
         <Nav.Item className="navbar-dropdown">
           <Dropdown className="navbar-dropdown">
@@ -97,6 +116,28 @@ const NavBar = () => {
           </div>
         </div>
       )}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Get Updates</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To get updates about your tasks, please enter your email address here. We
+            will send updates to your email.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name1"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmitEmail}>Subscribe</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

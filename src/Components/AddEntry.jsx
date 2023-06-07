@@ -54,7 +54,7 @@ function AddEntry() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-   
+    
   };
 
   return (
