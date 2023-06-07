@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import '../CSSstyles/GDetails.css';
+import NavBar from '../Navs/grassrootnav';
 
 function GDetails() {
   // Assuming you have an array of data containing S.No., Step, and Sub-steps
   const initialData = [
-    { sNo: 1, step: 'Step 1', subSteps: [{ subStep: 'Sub-step 1.1', completed: false }, { subStep: 'Sub-step 1.2', completed: false }, { subStep: 'Sub-step 1.3', completed: false }] },
-    { sNo: 2, step: 'Step 2', subSteps: [{ subStep: 'Sub-step 2.1', completed: false }, { subStep: 'Sub-step 2.2', completed: false }] },
-    { sNo: 3, step: 'Step 3', subSteps: [{ subStep: 'Sub-step 3.1', completed: false }, { subStep: 'Sub-step 3.2', completed: false }, { subStep: 'Sub-step 3.3', completed: false }, { subStep: 'Sub-step 3.4', completed: false }] },
+    { sNo: 1, step: 'Work on and complete documentation', subSteps: [{ subStep: 'Newspaper Publication', completed: false }, { subStep: 'TV Telecasting', completed: false }, { subStep: 'File Missing Compliant, if not already done', completed: false }] },
+    { sNo: 2, step: 'Submit to DCPU and get NOC', subSteps: [{ subStep: 'Submit child’s report for DCPU for NOC', completed: false }, { subStep: 'Receive DCPU NOC', completed: false }] },
+    { sNo: 3, step: 'Work on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentation', subSteps: [{ subStep: 'Sub-step 3.1', completed: false }, { subStep: 'Sub-step 3.2', completed: false }, { subStep: 'Sub-step 3.3', completed: false }, { subStep: 'Sub-step 3.4', completed: false }] },
     // Add more data as needed
   ];
 
@@ -29,7 +30,10 @@ function GDetails() {
   };
 
   return (
+    <div>
+    <NavBar />
     <div className="table-container">
+      
       <table className="data-table">
         <thead>
           <tr>
@@ -79,6 +83,7 @@ function GDetails() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

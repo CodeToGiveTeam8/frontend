@@ -57,7 +57,9 @@ function StatusUpdate() {
         className="my-notes-input"
         placeholder="My Notes"
       />
-      <div className="box-container">
+      <div>
+      <div className='box-container'>
+      <h4 className='upload-doc'>Upload Documets</h4>
         <div className="dotted-line-box">
           <img className="navbar-logo-image" src={img} alt="loimggo" />
           <div {...getRootProps()} className="upload-document-input">
@@ -69,18 +71,20 @@ function StatusUpdate() {
             )}
           </div>
         </div>
+        </div>
         <div className="uploaded-documents">
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Size</th>
-                <th>Type</th>
-                <th>Actions</th>
+                <th className='col'>Name</th>
+                <th className='col'>Size</th>
+                <th className='col'>Type</th>
+                <th className='col'>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {uploadedDocuments.length > 0 ? (
+              {
+              // uploadedDocuments.length > 0 ? (
               uploadedDocuments.map((document) => (
                 <tr key={document.id}>
                   <td>{document.name}</td>
@@ -93,11 +97,11 @@ function StatusUpdate() {
                   </td>
                 </tr>
               ))
-              ) : (
-                <tr>
-                  <td colSpan={4}>No documents uploaded</td>
-                </tr>
-              )
+              // ) : (
+              //   <tr>
+              //     <td colSpan={4}>No documents uploaded</td>
+              //   </tr>
+              // )
             }
             </tbody>
           </table>
