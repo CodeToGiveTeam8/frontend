@@ -15,8 +15,46 @@ const Register = () => {
   const [photo, setPhoto] = useState(null);
   const [role, setRole] = useState("");
   const [gender, setGender] = useState("");
+  const [teamLeadName, setTeamLeadName] = useState("");
 
   const navigate = useNavigate();
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [mobileError, setMobileError] = useState('');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+  const mobileRegex = /^[0-9]{10}$/;
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+    if (!emailRegex.test(event.target.value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  // Handle changes to the password field
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    if (!passwordRegex.test(event.target.value)) {
+      setPasswordError('Password must be at least 8 characters long and contain at least one uppercase letter one lowercase letter, and one number');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  // Handle changes to the mobile number field
+  const handleMobileChange = (event) => {
+    setMobile(event.target.value);
+    if (!mobileRegex.test(event.target.value)) {
+      setMobileError('Please enter a valid mobile number');
+    } else {
+      setMobileError('');
+    }
+  };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -116,9 +154,10 @@ const Register = () => {
                   id="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                 />
               </div>
+              {emailError && <div>{emailError}</div>}
               <div className="form-group">
                 <label htmlFor="mobile">Mobile Number</label>
                 <input
@@ -126,9 +165,9 @@ const Register = () => {
                   id="mobile"
                   required
                   value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
-                />
+                  onChange={handleMobileChange} />
               </div>
+              {mobileError && <div>{mobileError}</div>}
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
@@ -136,8 +175,8 @@ const Register = () => {
                   id="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                  onChange={handlePasswordChange} />
+              {passwordError && <div>{passwordError}</div>}
               </div>
               <div className="form-group">
                 <label htmlFor="confirmpassword">Confirm Password</label>
@@ -171,10 +210,22 @@ const Register = () => {
               <div  className="dropdowns">
                 <label htmlFor="role" >Role</label>
                 <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="">Select a role</option>
                 <option value="GRASSROOT">Grassroot</option>
                   <option value="OPERATION">Operation</option>
                   <option value="TEAMLEAD">Team Lead</option>
                 </select>
+                {role === 'GRASSROOT' && (
+                <div className="form-group">
+                <label htmlFor="teamlead">Team Lead Name</label>
+                <input
+                  type="text"
+                  id="teamlead"
+                  value={teamLeadName}
+                  onChange={(e) => setTeamLeadName(e.target.value)}
+                />
+              </div>
+      )}
                 <label htmlFor="gender">Gender</label>
                 <select id = "gender" value={gender} onChange={(e) => setGender(e.target.value)}>
                   <option value="MALE">Male</option>
@@ -182,6 +233,7 @@ const Register = () => {
                   <option value = "OTHER">Other</option>
                 </select>
               </div>
+              
             </div>
           </div>
           <button type="submit" className='Register-sub'>Register</button>
