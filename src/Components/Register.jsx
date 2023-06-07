@@ -49,7 +49,14 @@ const Register = () => {
     console.log(responseData)
     //if registration is successful,redirect to login
     if(responseData.status === 200){
-      navigate("/login");
+      navigate("/grassDashboard");
+    }
+    // if(responseData.status === 400){
+    //   alert("Email already exists");
+    // }
+
+    if (responseData.status === 400) {
+      setMessage('Email already exists');
     }
     // Handle form submission here
     if (password === confirmPassword) {
@@ -58,6 +65,8 @@ const Register = () => {
       alert("Passwords do not match");
     }
   };
+
+  const [message, setMessage] = useState('');
 
   const handlePhotoChange = (event) => {
     console.log(event.target.files[0])
@@ -78,7 +87,7 @@ const Register = () => {
       <div className="register">
         <form onSubmit={handleSubmit} className="form-register">
           <h2>Register</h2>
-          <div className="row">
+          <div className="row1">
             <div className="column">
               <div className="form-group">
                 <label htmlFor="name">Name</label>
@@ -176,6 +185,7 @@ const Register = () => {
             </div>
           </div>
           <button type="submit" className='Register-sub'>Register</button>
+          {message && <div>{message}</div>}
         </form>
       </div>
     </div>
