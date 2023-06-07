@@ -42,7 +42,7 @@ const Register = () => {
       body:objectBody
     }
     const responseData = await fetch(configObject.url,{
-      method:configObject.method?configObject.method:'GET',
+      method:configObject.method?configObject.method:'POST',
       body:configObject.body?JSON.stringify(configObject.body):null,
       headers:configObject.headers?configObject.headers:{},
     })
