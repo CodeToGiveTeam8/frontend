@@ -1,12 +1,63 @@
 .my-notes-input {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    background-color: red;
-    color: red;
+    top: 15%;
+    left: 5%;
+    width: 30%;
+    height: 200px;
+    background-color: #F5B4D4;
+    color: black;
     padding: 10px;
     border-radius: 5px;
-    border: none;
-    outline: none;
+  }
+    
+  .box-container {
+    margin-top: 20%;
+    padding-top: 0.5%;
+    margin-left: 5%;
+    background-color: #D9D9D9;
+    font-size: 1rem;
+    width: 31%;
+    border-radius: 5px;
+    padding-bottom: 0.2%;
+    display: flex;
+    flex-direction: row;
+  }
+  .dotted-line-box{
+    background-color: white;
+    width: 40%;
+    border-radius: 5px;
+    margin-left: 17%;
+    margin-bottom: 4%;
+    padding-left: 12%;
+    padding-right: 12%;
+    padding-top: 10%;
+    padding-bottom: 10%;
+  }
+  .uploaded-documents {
+    width: 70%; /* Adjust the width as needed */
+    margin-left: 70%; /* Adjust the margin as needed */
+    margin-top: 0%;
+    margin-bottom: 2%;
   }
   
+  .uploaded-documents table {
+    width: 100%;
+    /* background-color: aqua; */
+  }
+  
+  .uploaded-documents th,
+  .uploaded-documents td {
+    padding: 10px;
+    text-align: left;
+    width: 15%;
+    /* background-color: blue; */
+  }
+  
+  .uploaded-documents th {
+    background-color: #D9D9D9;
+    width: 20%;
+  }
+  
+  .uploaded-documents button {
+    margin-right: 5px;
+  }

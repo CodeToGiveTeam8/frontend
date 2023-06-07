@@ -1,37 +1,28 @@
 import React, { useState } from 'react';
-import '../CSSstyles/GDetails.css';
+import '../CSSstyles/StatusUpdate.css';
 import NavBar from '../Navs/grassrootnav';
+import { useDropzone } from 'react-dropzone';
+import img from "../../Images/upload.png";
 
 function StatusUpdate() {
   const [notes, setNotes] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedDocuments, setUploadedDocuments] = useState([]);
-  const [email, setEmail] = useState('');
+  const userEmail = 'user@example.com'; // Replace with actual method of retrieving user email
 
   const handleNotesChange = (event) => {
     setNotes(event.target.value);
   };
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  const handleUpload = (acceptedFiles) => {
+    const uploadedFiles = acceptedFiles.map((file) => ({
+      id: Date.now(),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      file: file,
+    }));
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handleUpload = () => {
-    if (selectedFile) {
-      const uploadedDocument = {
-        name: selectedFile.name,
-        size: selectedFile.size,
-        type: selectedFile.type,
-        file: selectedFile,
-      };
-
-      setUploadedDocuments([...uploadedDocuments, uploadedDocument]);
-      setSelectedFile(null);
-    }
+    setUploadedDocuments((prevDocuments) => [...prevDocuments, ...uploadedFiles]);
   };
 
   const handleDownload = (file) => {
@@ -45,44 +36,72 @@ function StatusUpdate() {
   const handleShareEmail = (file) => {
     const downloadUrl = URL.createObjectURL(file);
     const emailBody = `Please find the document attached.`;
-    const mailToLink = `mailto:${email}?subject=Shared Document&body=${encodeURIComponent(
+    const mailToLink = `mailto:${userEmail}?subject=Shared Document&body=${encodeURIComponent(
       emailBody
     )}`;
     window.open(mailToLink);
   };
 
+  const handleDelete = (id) => {
+    const updatedDocuments = uploadedDocuments.filter((document) => document.id !== id);
+    setUploadedDocuments(updatedDocuments);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleUpload });
   return (
     <div>
       <NavBar />
-      <input
-        type="text"
+      <textarea
         value={notes}
         onChange={handleNotesChange}
         className="my-notes-input"
         placeholder="My Notes"
       />
-      <input
-        type="file"
-        onChange={handleFileChange}
-        className="upload-document-input"
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={handleEmailChange}
-        placeholder="Email"
-      />
-      <button onClick={handleUpload}>Upload</button>
-      <div className="uploaded-documents">
-        {uploadedDocuments.map((document, index) => (
-          <div key={index} className="document-item">
-            <span>Name: {document.name}</span>
-            <span>Size: {document.size} bytes</span>
-            <span>Type: {document.type}</span>
-            <button onClick={() => handleDownload(document.file)}>Download</button>
-            <button onClick={() => handleShareEmail(document.file)}>Share</button>
+      <div className="box-container">
+        <div className="dotted-line-box">
+          <img className="navbar-logo-image" src={img} alt="loimggo" />
+          <div {...getRootProps()} className="upload-document-input">
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>Drop the files here to upload</p>
+            ) : (
+              <p>Click here to select files or, drag and drop files</p>
+            )}
           </div>
-        ))}
+        </div>
+        <div className="uploaded-documents">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uploadedDocuments.length > 0 ? (
+              uploadedDocuments.map((document) => (
+                <tr key={document.id}>
+                  <td>{document.name}</td>
+                  <td>{document.size} bytes</td>
+                  <td>{document.type}</td>
+                  <td>
+                    <button onClick={() => handleDownload(document.file)}>Download</button>
+                    <button onClick={() => handleShareEmail(document.file)}>Share</button>
+                    <button onClick={() => handleDelete(document.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))
+              ) : (
+                <tr>
+                  <td colSpan={4}>No documents uploaded</td>
+                </tr>
+              )
+            }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
