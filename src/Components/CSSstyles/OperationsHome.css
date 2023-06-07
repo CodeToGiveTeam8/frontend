@@ -4,6 +4,8 @@
 
 table {
     border-collapse: collapse;
+    padding-left: 2%;
+    padding-right: 2%;
     width: 100%;
     color: black;
   }
@@ -24,8 +26,8 @@ table {
     margin-bottom: 16px;
     width: 50%;
     box-sizing: border-box;
-    border: 2px solid #E95CA1;
-    background-color: #E95CA1;
+    border: 2px solid rgba(49,49,49,0.8);
+    background-color: #ffffff;
     border-radius: 20px;
   }
   
