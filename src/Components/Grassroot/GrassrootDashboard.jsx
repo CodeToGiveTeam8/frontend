@@ -24,7 +24,7 @@ const GrassrootDashboard = () => {
     );
   });
 
-  const getChildData = (configObject)=>{
+  const APICall = (configObject)=>{
     return new Promise((resolve,reject)=>{
       fetch(configObject.url,{
         method:configObject.method?configObject.method:'GET',
@@ -34,17 +34,20 @@ const GrassrootDashboard = () => {
     })
   }
 
+  const handleRowClick = (id) => {
+    console.log('Clicked row with ID:', id);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
         const configObject = {
           url:"http://localhost:8081/home",
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await getChildData(configObject)
+        const responseData = await APICall(configObject)
         const data = responseData['data']
         console.log(data)
         setData(data)
@@ -52,6 +55,8 @@ const GrassrootDashboard = () => {
         console.error('Error:', error);
       }
     };
+
+    
 
     fetchData();
   }, []);
@@ -81,7 +86,7 @@ const GrassrootDashboard = () => {
           </thead>
           <tbody>
             {filteredData.map((item) => (
-              <tr key={item.id}>
+              <tr key={item.childId} onClick={() => handleRowClick(item.childId)}>
                 <td>{item.childId}</td>
                 <td>{item.name}</td>
                 <td>{item.category}</td>
