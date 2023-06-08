@@ -13,14 +13,16 @@ const GrassrootDashboard = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data?.filter((item) => {
+    
+    console.log(item)
     const lowercaseQuery = searchQuery.toLowerCase();
     return (
-      item.childId?.toString().includes(lowercaseQuery) ||
-      item.name?.toLowerCase().includes(lowercaseQuery) ||
-      item.category?.toLowerCase().includes(lowercaseQuery) ||
-      item.user_name?.toLowerCase().includes(lowercaseQuery) ||
-      item.orphanage?.toLowerCase().includes(lowercaseQuery)
+      item?.childId?.toString().includes(lowercaseQuery) ||
+      item?.name?.toLowerCase().includes(lowercaseQuery) ||
+      item?.category?.toLowerCase().includes(lowercaseQuery) ||
+      item?.user_name?.toLowerCase().includes(lowercaseQuery) ||
+      item?.orphanage?.toLowerCase().includes(lowercaseQuery)
     );
   });
 
@@ -49,6 +51,7 @@ const GrassrootDashboard = () => {
         }
         const responseData = await APICall(configObject)
         const data = responseData['data']
+        console.log(responseData)
         console.log(data)
         setData(data)
       } catch (error) {

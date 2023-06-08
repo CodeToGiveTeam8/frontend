@@ -8,6 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Typography from "@material-ui/core/Typography";
 import Cookies from 'universal-cookie';
+import {useNavigate} from "react-router-dom";
 import './Navs/styles.css'
 import React, { useState,useEffect } from 'react';
 import CreatableSelect from 'react-select/creatable';
@@ -29,6 +30,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    boxShadow: state.isFocused ? '0 0 0 1px #3f51b5' : null,
+    '&:hover': {
+      borderColor: state.isFocused ? '#3f51b5' : '#ccc',
+    },
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#3f51b5' : null,
+    color: state.isSelected ? '#fff' : null,
+  }),
+};
+
+
 const categories = ["ABANDONED", "SURRENDERED", "ORPHANED","CHILD ADMITTED IN CCI BY FAMILY"];
 
 const genders = ["MALE", "FEMALE", "OTHER"];
@@ -49,6 +68,7 @@ function AddEntry() {
   const [state, setState] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState('');
 
+  const navigate = useNavigate();
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -125,6 +145,7 @@ function AddEntry() {
     })
     if(responseData.status==200){
       console.log("Added successfully")
+      navigate("/grassDashboard");
     }
     console.log(responseData)
     
@@ -158,6 +179,7 @@ function AddEntry() {
     }
     setOrphanageName(selectedOption.value)
   };
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -219,11 +241,28 @@ function AddEntry() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
+       
         <CreatableSelect  required 
         isClearable value={orphanageName} 
         options={ophanageList}
         onChange={handleOrphanageChange}
-        placeholder="Orphanage"/>
+        placeholder="Orphanage"
+        />
+        {/* <Grid item xs={12} sm={6}>
+      <FormControl required fullWidth variant="outlined" size="small">
+        <InputLabel id="orphanage-label">Orphanage</InputLabel>
+        <Select
+          labelId="orphanage-label"
+          id="orphanage"
+          value={value}
+          onChange={handleChange}
+          fullWidth
+        >
+          {orphanageOptions}
+          <MenuItem value="__add__">Add Orphanage</MenuItem>
+        </Select>
+      </FormControl>
+    </Grid> */}
           {/* <TextField
             required
             id="orphanageName"
