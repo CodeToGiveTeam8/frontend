@@ -3,8 +3,8 @@ import './teamlead.css';
 import { TreeGridComponent, ColumnsDirective, ColumnDirective,
   Inject, Page, Sort, Filter } from '@syncfusion/ej2-react-treegrid';
   import { summaryData } from './data';
-
   import NavBar from '../Navs/grassrootnav'
+  
 
 function TeamLeadHome() {
 
