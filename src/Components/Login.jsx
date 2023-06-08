@@ -3,7 +3,7 @@ import {useNavigate, Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import "./CSSstyles/Login.css";
 import Headerl from "./Headerl";
-// import bgimagelogin from "../Images/loginpage.jpg"
+// import bgimage from "../Images/loginpage.jpg"
 
 function Login() {
 
@@ -45,7 +45,7 @@ function Login() {
     navigate('/grassDashboard');
   }
   return (
-    <div >
+    <div>
       <Headerl/>
       <div className='login-inner'>
       <form onSubmit={handleSubmit} className="box">

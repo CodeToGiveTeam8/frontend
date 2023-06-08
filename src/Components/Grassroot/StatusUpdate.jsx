@@ -13,6 +13,18 @@ function StatusUpdate() {
     setNotes(event.target.value);
   };
 
+  const formatSize = (size) => {
+    if (size < 1024) {
+      return `${size} B`;
+    } else if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(2)} KB`;
+    } else if (size < 1024 * 1024 * 1024) {
+      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    } else {
+      return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    }
+  };
+
   const handleUpload = (acceptedFiles) => {
     const uploadedFiles = acceptedFiles.map((file) => ({
       id: Date.now(),
@@ -48,61 +60,70 @@ function StatusUpdate() {
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleUpload });
+
   return (
-    <div>
+    <div className="status-update-container">
       <NavBar />
-      <textarea
-        value={notes}
-        onChange={handleNotesChange}
-        className="my-notes-input"
-        placeholder="My Notes"
-      />
-      <div>
-      <div className='box-container'>
-      <h4 className='upload-doc'>Upload Documets</h4>
-        <div className="dotted-line-box">
-          <img className="navbar-logo-image" src={img} alt="loimggo" />
-          <div {...getRootProps()} className="upload-document-input">
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p>Drop the files here to upload</p>
-            ) : (
-              <p>Click here to select files or, drag and drop files</p>
-            )}
+      
+      <div  className='page-name'>
+        <h5>{'>'}Status Update{'>'} Work on and complete documentation</h5>
+      </div>
+      <div className='row2'>
+        <div className='col3'>
+          <textarea
+            value={notes}
+            onChange={handleNotesChange}
+            className="my-notes-input"
+            placeholder="My Notes"
+          />
+        </div>
+        <div className='col4'>
+          
+        </div>
+      </div>
+      <div className='row1'>
+        <div className='col1'>
+          <div className="dotted-line-box">
+            <img className="navbar-logo-image" src={img} alt="logo" />
+            <div {...getRootProps()} className="upload-document-input">
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the files here to upload</p>
+              ) : (
+                <p>Click here to select files or, drag and drop files</p>
+              )}
+            </div>
           </div>
         </div>
-        </div>
-        <div className="uploaded-documents">
+        <div className="col2">
           <table>
             <thead>
               <tr>
-                <th className='col'>Name</th>
-                <th className='col'>Size</th>
-                <th className='col'>Type</th>
-                <th className='col'>Actions</th>
+                <th>Document Name</th>
+                <th>Size (Bytes)</th>
+                <th>Type</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {
-              // uploadedDocuments.length > 0 ? (
-              uploadedDocuments.map((document) => (
-                <tr key={document.id}>
-                  <td>{document.name}</td>
-                  <td>{document.size} bytes</td>
-                  <td>{document.type}</td>
-                  <td>
-                    <button onClick={() => handleDownload(document.file)}>Download</button>
-                    <button onClick={() => handleShareEmail(document.file)}>Share</button>
-                    <button onClick={() => handleDelete(document.id)}>Delete</button>
-                  </td>
+              {uploadedDocuments.length === 0 ? (
+                <tr>
+                  <td colSpan="4">No document added</td>
                 </tr>
-              ))
-              // ) : (
-              //   <tr>
-              //     <td colSpan={4}>No documents uploaded</td>
-              //   </tr>
-              // )
-            }
+              ) : (
+                uploadedDocuments.map((document) => (
+                  <tr key={document.id}>
+                    <td>{document.name}</td>
+                    <td>{formatSize(document.size)}</td>
+                    <td>{document.type}</td>
+                    <td>
+                      <button onClick={() => handleDownload(document.file)}>Download</button>
+                      <button onClick={() => handleShareEmail(document.file)}>Share</button>
+                      <button onClick={() => handleDelete(document.id)}>Delete</button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
