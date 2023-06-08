@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -10,6 +9,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Typography from "@material-ui/core/Typography";
 import Cookies from 'universal-cookie';
 import './Navs/styles.css'
+import React, { useState,useEffect } from 'react';
+import CreatableSelect from 'react-select/creatable';
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -32,6 +34,8 @@ const categories = ["ABANDONED", "SURRENDERED", "ORPHANED","CHILD ADMITTED IN CC
 const genders = ["MALE", "FEMALE", "OTHER"];
 
 function AddEntry() {
+  const cookies = new Cookies();  
+  const [ophanageList,setOphanageList] = useState([]);
   const classes = useStyles();
   const [name, setName] = useState("");
   const [id, setId] = useState("");
@@ -52,6 +56,42 @@ function AddEntry() {
     setSelectedFile(event.target.files[0]);
   };
 
+  const APICall = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:"http://localhost:8081/orphanage/",
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const data = responseData['data']
+        console.log(data)
+        let arr = []
+        data.forEach(element => {
+          arr.push({ value: element.name, label: element.name })
+        });
+        console.log(arr)
+        setOphanageList(arr)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleSubmit = async(event) => {
     event.preventDefault();
     const objectBody = {
@@ -70,7 +110,6 @@ function AddEntry() {
 
     console.log(enrollmentDate)
 
-    const cookies = new Cookies();  
     const token = cookies.get("accessToken");
     
     const configObject = {
@@ -89,6 +128,35 @@ function AddEntry() {
     }
     console.log(responseData)
     
+  };
+
+  const AddOrphanage = async(name)=>{
+    const token = cookies.get("accessToken");
+    const objectBody = {name}
+
+    const configObject = {
+      url:"http://localhost:8081/orphanage/add",
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization': token},
+      body:objectBody
+    }
+    const responseData = await fetch(configObject.url,{
+      method:configObject.method?configObject.method:'POST',
+      body:configObject.body?JSON.stringify(configObject.body):null,
+      headers:configObject.headers?configObject.headers:{},
+    })
+    if(responseData.status==200){
+      console.log("Added successfully")
+    }
+    console.log(responseData)
+  }
+
+  const handleOrphanageChange = (selectedOption) => {
+    if(selectedOption.__isNew__){
+      AddOrphanage(selectedOption.value)
+      setOphanageList(prevState => [...prevState, selectedOption]);
+    }
+    setOrphanageName(selectedOption.value)
   };
 
   return (
@@ -141,7 +209,6 @@ function AddEntry() {
               value={gender}
               onChange={(event) => setGender(event.target.value)}
               fullWidth
-              
             >
               {genders.map((gender) => (
                 <MenuItem key={gender} value={gender}>
@@ -152,7 +219,12 @@ function AddEntry() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+        <CreatableSelect  required 
+        isClearable value={orphanageName} 
+        options={ophanageList}
+        onChange={handleOrphanageChange}
+        placeholder="Orphanage"/>
+          {/* <TextField
             required
             id="orphanageName"
             label="Orphanage Name"
@@ -160,7 +232,7 @@ function AddEntry() {
             onChange={(event) => setOrphanageName(event.target.value)}
             fullWidth
             variant="outlined" size="small"
-          />
+          /> */}
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required fullWidth variant="outlined" size="small">
