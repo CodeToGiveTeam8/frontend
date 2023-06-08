@@ -1,134 +1,186 @@
 import React, { useState } from 'react';
 import '../CSSstyles/StatusUpdate.css';
 import NavBar from '../Navs/grassrootnav';
-import { useDropzone } from 'react-dropzone';
-import img from "../../Images/upload.png";
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Paper, Button, Input, TextareaAutosize } from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(10),
+  },
+  paper: {
+    // padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  uploadButton: {
+    marginTop: theme.spacing(1),
+  },
+  inputFile: {
+    display: 'none',
+  },
+  textareaContainer: {
+    height: '60px',
+    overflowY: 'auto',
+  },
+}));
 
 function StatusUpdate() {
-  const [notes, setNotes] = useState('');
-  const [uploadedDocuments, setUploadedDocuments] = useState([]);
-  const userEmail = 'user@example.com'; // Replace with actual method of retrieving user email
+  const classes = useStyles();
 
-  const handleNotesChange = (event) => {
-    setNotes(event.target.value);
+  const [entries, setEntries] = useState([
+    {
+      id: 1,
+      sNo: '1',
+      subProcesses: 'File Missing Compliant, if not already done',
+      documentType: 'Copy of the complain',
+      uploadedDocuments: [],
+      comments: '',
+    },
+    {
+      id: 2,
+      sNo: '2',
+      subProcesses: 'Process 2',
+      documentType: 'Type 2',
+      uploadedDocuments: [],
+      comments: '',
+    },
+  ]);
+
+  const handleUpload = (entryId) => (event) => {
+    const file = event.target.files[0];
+    const fileName = file.name;
+    const updatedEntries = entries.map((entry) => {
+      if (entry.id === entryId) {
+        return {
+          ...entry,
+          uploadedDocuments: [...entry.uploadedDocuments, { name: fileName, file }],
+        };
+      }
+      return entry;
+    });
+    setEntries(updatedEntries);
   };
 
-  const formatSize = (size) => {
-    if (size < 1024) {
-      return `${size} B`;
-    } else if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(2)} KB`;
-    } else if (size < 1024 * 1024 * 1024) {
-      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-    } else {
-      return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-    }
+  const handleCommentChange = (entryId) => (event) => {
+    const comment = event.target.value;
+    const updatedEntries = entries.map((entry) => {
+      if (entry.id === entryId) {
+        return {
+          ...entry,
+          comments: comment,
+        };
+      }
+      return entry;
+    });
+    setEntries(updatedEntries);
   };
-
-  const handleUpload = (acceptedFiles) => {
-    const uploadedFiles = acceptedFiles.map((file) => ({
-      id: Date.now(),
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      file: file,
-    }));
-
-    setUploadedDocuments((prevDocuments) => [...prevDocuments, ...uploadedFiles]);
-  };
-
-  const handleDownload = (file) => {
-    const downloadUrl = URL.createObjectURL(file);
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = file.name;
-    link.click();
-  };
-
-  const handleShareEmail = (file) => {
-    const downloadUrl = URL.createObjectURL(file);
-    const emailBody = `Please find the document attached.`;
-    const mailToLink = `mailto:${userEmail}?subject=Shared Document&body=${encodeURIComponent(
-      emailBody
-    )}`;
-    window.open(mailToLink);
-  };
-
-  const handleDelete = (id) => {
-    const updatedDocuments = uploadedDocuments.filter((document) => document.id !== id);
-    setUploadedDocuments(updatedDocuments);
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleUpload });
 
   return (
-    <div className="status-update-container">
+    <>
       <NavBar />
-      
-      <div  className='page-name'>
-        <h5>{'>'}Status Update{'>'} Work on and complete documentation</h5>
+      <div className={classes.root}>
+        <Grid container spacing={50}>
+          <Grid item xs={10}>
+            <Grid container spacing={2}>
+              <Grid item xs={1}>
+                <Paper className={classes.paper}>S.No.</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    {entry.sNo}
+                  </Paper>
+                ))}
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>Sub-processes</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    {entry.subProcesses}
+                  </Paper>
+                ))}
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>Document Type</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    {entry.documentType}
+                  </Paper>
+                ))}
+              </Grid>
+              <Grid item xs={2}>
+                <Paper className={classes.paper}>Upload</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    <input
+                      accept="*"
+                      className={classes.inputFile}
+                      id={`upload-input-${entry.id}`}
+                      type="file"
+                      onChange={handleUpload(entry.id)}
+                    />
+                    <label htmlFor={`upload-input-${entry.id}`}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component="span"
+                        className={classes.uploadButton}
+                      >
+                        Upload
+                      </Button>
+                    </label>
+                  </Paper>
+                ))}
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paper}>Uploaded Documents</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    {entry.uploadedDocuments.length > 0 ? (
+                      entry.uploadedDocuments.map((document, index) => (
+                        <Button
+                          key={index}
+                          variant="text"
+                          color="primary"
+                          onClick={() => {
+                            const downloadUrl = URL.createObjectURL(document.file);
+                            window.open(downloadUrl, '_blank');
+                          }}
+                        >
+                          {document.name}
+                        </Button>
+                      ))
+                    ) : (
+                      <span>No Documents Uploaded</span>
+                    )}
+                  </Paper>
+                ))}
+              </Grid>
+              <Grid item xs={2}>
+                <Paper className={classes.paper}>Comments</Paper>
+                {entries.map((entry) => (
+                  <Paper key={entry.id} className={classes.paper}>
+                    <div className={classes.textareaContainer}>
+                      <TextareaAutosize
+                        value={entry.comments}
+                        onChange={handleCommentChange(entry.id)}
+                        rows={14}
+                        placeholder="Enter comments"
+                        className={classes.textarea}
+                      />
+                    </div>
+                  </Paper>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </div>
-      <div className='row2'>
-        <div className='col3'>
-          <textarea
-            value={notes}
-            onChange={handleNotesChange}
-            className="my-notes-input"
-            placeholder="My Notes"
-          />
-        </div>
-        <div className='col4'>
-          
-        </div>
-      </div>
-      <div className='row1'>
-        <div className='col1'>
-          <div className="dotted-line-box">
-            <img className="navbar-logo-image" src={img} alt="logo" />
-            <div {...getRootProps()} className="upload-document-input">
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop the files here to upload</p>
-              ) : (
-                <p>Click here to select files or, drag and drop files</p>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="col2">
-          <table>
-            <thead>
-              <tr>
-                <th>Document Name</th>
-                <th>Size (Bytes)</th>
-                <th>Type</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {uploadedDocuments.length === 0 ? (
-                <tr>
-                  <td colSpan="4">No document added</td>
-                </tr>
-              ) : (
-                uploadedDocuments.map((document) => (
-                  <tr key={document.id}>
-                    <td>{document.name}</td>
-                    <td>{formatSize(document.size)}</td>
-                    <td>{document.type}</td>
-                    <td>
-                      <button onClick={() => handleDownload(document.file)}>Download</button>
-                      <button onClick={() => handleShareEmail(document.file)}>Share</button>
-                      <button onClick={() => handleDelete(document.id)}>Delete</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 
