@@ -10,9 +10,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import "./styles.css";
+import Cookies from "universal-cookie";
+import {useNavigate, Link} from "react-router-dom";
+
+
 
 const NavBar = () => {
   const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
+
 
   const toggleModal = () => {
     setModal(!modal);
@@ -39,6 +45,12 @@ const NavBar = () => {
     console.log("Email submitted");
   };
 
+  const logOut = () => {
+    const cookies = new Cookies();  
+    cookies.remove("accessToken");
+    navigate('/');
+
+  }
 
 
   const handleItemSelect = (eventKey) => {
@@ -97,7 +109,7 @@ const NavBar = () => {
           </Dropdown>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link className="navbar-link" href="#">
+          <Nav.Link className="navbar-link" onClick={logOut}>
             Logout
           </Nav.Link>
         </Nav.Item>

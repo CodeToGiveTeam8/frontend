@@ -70,8 +70,9 @@ const Register = () => {
 
     //body to send for backend
     const objectBody = {
-      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT'
+      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT', team_lead : teamLeadName
     }
+    console.log(objectBody)
     //the config object
     const configObject = {
       url:"http://localhost:8081/user/register",
@@ -119,10 +120,10 @@ const Register = () => {
   return (
     <div style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center"}}>
       <Headerl />
-      <div className="register">
+      <div className="register1">
         <form onSubmit={handleSubmit} className="form-register">
           <h2>Register</h2>
-          <div className="row1">
+          <div className="row2">
             <div className="column">
               <div className="form-group">
                 <label htmlFor="name">Name</label>
