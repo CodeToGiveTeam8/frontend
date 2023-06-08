@@ -70,8 +70,9 @@ const Register = () => {
 
     //body to send for backend
     const objectBody = {
-      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT'
+      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT', team_lead : teamLeadName
     }
+    console.log(objectBody)
     //the config object
     const configObject = {
       url:"http://localhost:8081/user/register",
