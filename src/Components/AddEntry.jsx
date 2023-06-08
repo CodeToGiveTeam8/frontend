@@ -38,7 +38,6 @@ function AddEntry() {
   const [gender, setGender] = useState("");
   const [orphanageName, setOrphanageName] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [category, setCategory] = useState("");
   const [enrollmentDate, setEnrollmentDate] = useState("");
   const [city, setCity] = useState("");
@@ -156,16 +155,7 @@ function AddEntry() {
             variant="outlined" size="small"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            variant="outlined" size="small"
-            id="endDate"
-            label="End Date (MM/DD/YYYY)"
-            value={endDate}
-            onChange={(event) => setEndDate(event.target.value)}
-            fullWidth
-          />
-        </Grid>
+       
         
         <Grid item xs={12} sm={6}>
           <TextField
