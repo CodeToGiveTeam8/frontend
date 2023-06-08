@@ -1,6 +1,14 @@
 import { React, useState } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import logo from "../../Images/logoBAT.png";
+import AddEntry from "../AddEntry";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import "./styles.css";
 
 const NavBar = () => {
@@ -16,21 +24,22 @@ const NavBar = () => {
     document.body.classList.remove("active-modal");
   }
 
-  const [childId, setChildId] = useState('');
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [photo, setPhoto] = useState(null);
-  const [category, setCategory] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [open, setOpen] = useState(false);
 
-
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    // Submit the form data to the backend here
+  const handleClickOpen = () => {
+    setOpen(true);
   };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmitEmail = (e) => {
+    e.preventDefault();
+    console.log("Email submitted");
+  };
+
+
 
   const handleItemSelect = (eventKey) => {
     // Handle language selection logic here
@@ -54,9 +63,10 @@ const NavBar = () => {
         </Nav.Item>
 
         <Nav.Item>
-          <Nav.Link className="navbar-link" href="#">
+          <Nav.Link className="navbar-link" onClick={handleClickOpen}>
             Get Updates
           </Nav.Link>
+          
         </Nav.Item>
         <Nav.Item className="navbar-dropdown">
           <Dropdown className="navbar-dropdown">
@@ -96,122 +106,38 @@ const NavBar = () => {
         <div className="modal">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
-          <h2>Add New Child</h2>
-            <form onSubmit={handleFormSubmit}>
-              <div className="form-group">
-                <label htmlFor="childId">Child ID:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="childId"
-                  name="childId"
-                  value={childId}
-                  readOnly
-                />
-              </div>
-              <div className="form-group">
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          className="form-control"
-          id="name"
-          name="name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="gender">Gender:</label>
-        <select
-          className="form-control"
-          id="gender"
-          name="gender"
-          value={gender}
-          onChange={(event) => setGender(event.target.value)}
-          required
-        >
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label htmlFor="photo">Photo:</label>
-        <input
-          type="file"
-          className="form-control-file"
-          id="photo"
-          name="photo"
-          onChange={(event) => setPhoto(event.target.files[0])}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="category">Category:</label>
-        <select
-          className="form-control"
-          id="category"
-          name="category"
-          value={category}
-          onChange={(event) => setCategory(event.target.value)}
-        >
-          <option value="">Select Category</option>
-          <option value="category1">Category 1</option>
-          <option value="category2">Category 2</option>
-          <option value="category3">Category 3</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label htmlFor="city">City:</label>
-        <input
-          type="text"
-          className="form-control"
-          id="city"
-          name="city"
-          value={city}
-          onChange={(event) => setCity(event.target.value)}
-        />
-      </div>
-      {/*<div className="form-group">
-        <label htmlFor="state">State:</label>
-        <input
-          type="text"
-          className="form-control"
-          id="state"
-          name="state"
-          value={state}
-          onChange={(event) => setState(event.target.value)}
-        />
-      </div>
-       <div className="form-group">
-        <label htmlFor="start_date">Start Date:</label>
-        <input
-          type="date"
-          className="form-control"
-          id="start_date"
-          name="start_date"
-          value={startDate}
-          onChange={(event) => setStartDate(event.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="end_date">End Date:</label>
-        <input
-          type="date"
-          className="form-control"
-          id="end_date"
-          name="end_date"
-          value={endDate}
-          onChange={(event) => setEndDate(event.target.value)}
-        />
-      </div> */}
-            </form>
-            <button className="close-modal" onClick={toggleModal}>
+         
+          <div style={{height: '550px', overflow: 'auto', overflowX: 'hidden'}}>
+  <AddEntry />
+</div>
+            {/* <button className="close-modal" onClick={toggleModal}>
               CLOSE
-            </button>
+            </button> */}
           </div>
         </div>
       )}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Get Updates</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To get updates about your tasks, please enter your email address here. We
+            will send updates to your email.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name1"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmitEmail}>Subscribe</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

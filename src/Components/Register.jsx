@@ -89,9 +89,6 @@ const Register = () => {
     if(responseData.status === 200){
       navigate("/grassDashboard");
     }
-    // if(responseData.status === 400){
-    //   alert("Email already exists");
-    // }
 
     if (responseData.status === 400) {
       setMessage('Email already exists');

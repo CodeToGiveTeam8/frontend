@@ -60,9 +60,8 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
-  #name, #teamlead,
-  input[type='date'],
-  input[type='email'],
+  #name, #teamlead, #email,
+  #dob,
   input[type='tel'],
   input[type='password'] {
     display: block;
