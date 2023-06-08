@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const categories = ["Abandon", "Surrender", "Admitted"];
+const categories = ["ABANDONED", "SURRENDERED", "ORPHANED","CHILD ADMITTED IN CCI BY FAMILY"];
 
-const genders = ["Male", "Female", "Other"];
+const genders = ["MALE", "FEMALE", "OTHER"];
 
 function AddEntry() {
   const classes = useStyles();
@@ -55,8 +55,21 @@ function AddEntry() {
   const handleSubmit = async(event) => {
     event.preventDefault();
     const objectBody = {
-      id,name,dob,gender,orphanageName,category,startDate,enrollmentDate,city, state, additionalDetails
+      childId : id,
+      name,
+      dob,
+      gender,
+      orphanage : orphanageName,
+      category,
+      start_date : startDate,
+      enrollment_date : enrollmentDate,
+      city, 
+      state, 
+      description : additionalDetails
     }
+
+    console.log(enrollmentDate)
+
     const cookies = new Cookies();  
     const token = cookies.get("accessToken");
     
@@ -71,6 +84,9 @@ function AddEntry() {
       body:configObject.body?JSON.stringify(configObject.body):null,
       headers:configObject.headers?configObject.headers:{},
     })
+    if(responseData.status==200){
+      console.log("Added successfully")
+    }
     console.log(responseData)
     
   };

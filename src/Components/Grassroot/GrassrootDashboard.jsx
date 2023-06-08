@@ -1,31 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import Cookies from 'universal-cookie';
 import '../CSSstyles/GrassrootDash.css';
 import NavBar from '../Navs/grassrootnav';
 
 
 const GrassrootDashboard = () => {
+  const cookies = new Cookies();  
   const [searchQuery, setSearchQuery] = useState('');
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      category: 'Abandon',
-      caseProgress: 'Publish photo of the child in 2 National News Papers and 1 National TV Channel (DD)',
-      deadline: '2023-06-30',
-      socialWorker: 'Jane Smith',
-      orphanage: 'Hope House'
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      category: 'Surrender',
-      caseProgress: 'Contact Local Police Department to find the biological parents',
-      deadline: '2023-07-15',
-      socialWorker: 'John Doe',
-      orphanage: 'Sunshine Home'
-    },
-    // Add more data objects as needed...
-  ]);
+  const [data, setData] = useState([]);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -34,13 +16,45 @@ const GrassrootDashboard = () => {
   const filteredData = data.filter((item) => {
     const lowercaseQuery = searchQuery.toLowerCase();
     return (
-      item.id.toString().includes(lowercaseQuery) ||
-      item.name.toLowerCase().includes(lowercaseQuery) ||
-      item.category.toLowerCase().includes(lowercaseQuery) ||
-      item.socialWorker.toLowerCase().includes(lowercaseQuery) ||
-      item.orphanage.toLowerCase().includes(lowercaseQuery)
+      item.childId?.toString().includes(lowercaseQuery) ||
+      item.name?.toLowerCase().includes(lowercaseQuery) ||
+      item.category?.toLowerCase().includes(lowercaseQuery) ||
+      item.user_name?.toLowerCase().includes(lowercaseQuery) ||
+      item.orphanage?.toLowerCase().includes(lowercaseQuery)
     );
   });
+
+  const getChildData = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:"http://localhost:8081/home",
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await getChildData(configObject)
+        const data = responseData['data']
+        console.log(data)
+        setData(data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div style={{ backgroundColor:"white" }}>
@@ -56,7 +70,7 @@ const GrassrootDashboard = () => {
         <table>
           <thead>
             <tr>
-              <th>Id</th>
+              <th>Child-Id</th>
               <th>Name</th>
               <th>Category</th>
               <th>Case progress</th>
@@ -68,12 +82,12 @@ const GrassrootDashboard = () => {
           <tbody>
             {filteredData.map((item) => (
               <tr key={item.id}>
-                <td>{item.id}</td>
+                <td>{item.childId}</td>
                 <td>{item.name}</td>
                 <td>{item.category}</td>
-                <td>{item.caseProgress}</td>
-                <td>{item.deadline}</td>
-                <td>{item.socialWorker}</td>
+                <td>{item.status}</td>
+                <td>{item.deadline|| "NA"}</td>
+                <td>{item.user_name}</td>
                 <td>{item.orphanage}</td>
               </tr>
             ))}
