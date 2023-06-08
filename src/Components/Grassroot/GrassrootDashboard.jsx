@@ -46,6 +46,7 @@ const GrassrootDashboard = () => {
     <div style={{ backgroundColor:"white" }}>
     <NavBar/>
       <div className='ophome'>
+      <h3>Grassroot Dashboard</h3>
         <input 
           type="text" 
           placeholder='Search...'

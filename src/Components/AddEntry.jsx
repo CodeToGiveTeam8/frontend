@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Typography from "@material-ui/core/Typography";
+import Cookies from 'universal-cookie';
 import './Navs/styles.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -51,8 +52,26 @@ function AddEntry() {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
+    const objectBody = {
+      id,name,dob,gender,orphanageName,category,startDate,enrollmentDate,city, state, additionalDetails
+    }
+    const cookies = new Cookies();  
+    const token = cookies.get("accessToken");
+    
+    const configObject = {
+      url:"http://localhost:8081/child/add",
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization': token},
+      body:objectBody
+    }
+    const responseData = await fetch(configObject.url,{
+      method:configObject.method?configObject.method:'POST',
+      body:configObject.body?JSON.stringify(configObject.body):null,
+      headers:configObject.headers?configObject.headers:{},
+    })
+    console.log(responseData)
     
   };
 
