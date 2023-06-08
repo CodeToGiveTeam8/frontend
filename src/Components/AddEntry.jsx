@@ -9,6 +9,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Typography from "@material-ui/core/Typography";
 import Cookies from 'universal-cookie';
+import {useNavigate} from "react-router-dom";
 import './Navs/styles.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +33,8 @@ const categories = ["ABANDONED", "SURRENDERED", "ORPHANED","CHILD ADMITTED IN CC
 const genders = ["MALE", "FEMALE", "OTHER"];
 
 function AddEntry() {
+  const navigate = useNavigate();
+
   const classes = useStyles();
   const [name, setName] = useState("");
   const [id, setId] = useState("");
@@ -86,6 +89,7 @@ function AddEntry() {
     })
     if(responseData.status==200){
       console.log("Added successfully")
+      navigate("/grassDashboard");
     }
     console.log(responseData)
     
