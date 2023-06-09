@@ -1,39 +1,5 @@
-.root {
-  padding: 16px;
-  padding-top: 16px; /* Add padding-top for space above the table */
-}
+@import url("https://cdn.syncfusion.com/ej2/material.css");
 
-.paper {
-  padding: 16px;
-  text-align: center;
-  color: #000;
-  height: 100%; /* Set a fixed height for the Paper component */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tableHeader {
-  width: 100px; /* Customize the width of the table header */
-  height: 40px; /* Customize the height of the table header */
-  margin: 10px; /* Customize the margin of the table header */
-}
-
-.tableData {
-  width: 100px; /* Customize the width of the table data */
-  height: 40px; /* Customize the height of the table data */
-  margin: 10px; /* Customize the margin of the table data */
-}
-
-.uploadButton {
-  margin-top: 8px; /* Add margin-top for spacing between button and text */
-}
-
-.inputFile {
-  display: none;
-}
-
-.textareaContainer {
-  height: 60px;
-  overflow-y: auto;
+.paper{
+    padding-top: 200px;
 }

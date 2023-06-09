@@ -3,20 +3,53 @@ import '../CSSstyles/StatusUpdate.css';
 import NavBar from '../Navs/grassrootnav';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Button, Input, TextareaAutosize } from '@material-ui/core';
+import backgroundImage from './reg.jpg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    padding: theme.spacing(10),
+    marginTop: theme.spacing(20),
+    marginLeft: theme.spacing(12), // Adjust margin to match NavBar height
+  },
+  content: {
+    position: 'relative', // Add position relative
+    minHeight: 'calc(100vh - 64px)', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
+    paddingTop: theme.spacing(2), // Add top padding to align with NavBar
+    overflow: 'hidden', // Hide overflow to prevent the background from leaking through the blurred layer
+  },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: -1,
+    filter: 'blur(3px)', // Apply the blur effect
+    background: `url(${backgroundImage})`, // Apply background image
+    backgroundSize: 'cover',
   },
   paper: {
-    // padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    height: '100%',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: theme.spacing(2),
+    height: '40%',
+    marginBottom: theme.spacing(2),
+    width: '100%',
+    overflow: 'auto', // Add overflow auto to enable scrolling when content overflows
+  },
+  firstRowPaper: {
+    /* CSS styles for the first row */
+    backgroundColor: 'lightblue',
+    fontWeight: 'bold',
+    paddingTop: theme.spacing(2),
+    height: '30%',
+    marginBottom: theme.spacing(2),
+  },
+  overflowPaper: {
+    overflow: 'auto',
+    maxHeight: '200px', // Adjust the maximum height as needed
   },
   uploadButton: {
     marginTop: theme.spacing(1),
@@ -37,7 +70,7 @@ function StatusUpdate() {
     {
       id: 1,
       sNo: '1',
-      subProcesses: 'File Missing Compliant, if not already done',
+      subProcesses: 'File Missing Compliant, if not already doneFile Missing Compliant, if not already doneFile Missing Compliant, if not already done',
       documentType: 'Copy of the complain',
       uploadedDocuments: [],
       comments: '',
@@ -84,101 +117,100 @@ function StatusUpdate() {
   return (
     <>
       <NavBar />
-      <div className={classes.root}>
-        <Grid container spacing={50}>
-          <Grid item xs={10}>
-            <Grid container spacing={2}>
-              <Grid item xs={1}>
-                <Paper className={classes.paper}>S.No.</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    {entry.sNo}
-                  </Paper>
-                ))}
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>Sub-processes</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    {entry.subProcesses}
-                  </Paper>
-                ))}
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>Document Type</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    {entry.documentType}
-                  </Paper>
-                ))}
-              </Grid>
-              <Grid item xs={2}>
-                <Paper className={classes.paper}>Upload</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    <input
-                      accept="*"
-                      className={classes.inputFile}
-                      id={`upload-input-${entry.id}`}
-                      type="file"
-                      onChange={handleUpload(entry.id)}
-                    />
-                    <label htmlFor={`upload-input-${entry.id}`}>
+      <div className={classes.content}>
+        <div className={classes.background} />
+        <div className={classes.root}>
+          <Grid container spacing={2}>
+            <Grid item xs={1}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={classes.paper}>
+                  {entry.sNo}
+                </Paper>
+              ))}
+            </Grid>
+            <Grid item xs={2}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-processes</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={classes.paper}>
+                  {entry.subProcesses}
+                </Paper>
+              ))}
+            </Grid>
+            <Grid item xs={2}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Document Type</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={classes.paper}>
+                  {entry.documentType}
+                </Paper>
+              ))}
+            </Grid>
+            <Grid item xs={2}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Upload</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={classes.paper}>
+                  <input
+                    accept="*"
+                    className={classes.inputFile}
+                    id={`upload-input-${entry.id}`}
+                    type="file"
+                    onChange={handleUpload(entry.id)}
+                  />
+                  <label htmlFor={`upload-input-${entry.id}`}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component="span"
+                      className={classes.uploadButton}
+                    >
+                      Upload
+                    </Button>
+                  </label>
+                </Paper>
+              ))}
+            </Grid>
+            <Grid item xs={2}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Uploaded Documents</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={`${classes.paper} ${classes.overflowPaper}`}>
+                  {entry.uploadedDocuments.length > 0 ? (
+                    entry.uploadedDocuments.map((document, index) => (
                       <Button
-                        variant="contained"
+                        key={index}
+                        variant="text"
                         color="primary"
-                        component="span"
-                        className={classes.uploadButton}
+                        onClick={() => {
+                          const downloadUrl = URL.createObjectURL(document.file);
+                          window.open(downloadUrl, '_blank');
+                        }}
                       >
-                        Upload
+                        {document.name}
                       </Button>
-                    </label>
-                  </Paper>
-                ))}
-              </Grid>
-              <Grid item xs={3}>
-                <Paper className={classes.paper}>Uploaded Documents</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    {entry.uploadedDocuments.length > 0 ? (
-                      entry.uploadedDocuments.map((document, index) => (
-                        <Button
-                          key={index}
-                          variant="text"
-                          color="primary"
-                          onClick={() => {
-                            const downloadUrl = URL.createObjectURL(document.file);
-                            window.open(downloadUrl, '_blank');
-                          }}
-                        >
-                          {document.name}
-                        </Button>
-                      ))
-                    ) : (
-                      <span>No Documents Uploaded</span>
-                    )}
-                  </Paper>
-                ))}
-              </Grid>
-              <Grid item xs={2}>
-                <Paper className={classes.paper}>Comments</Paper>
-                {entries.map((entry) => (
-                  <Paper key={entry.id} className={classes.paper}>
-                    <div className={classes.textareaContainer}>
-                      <TextareaAutosize
-                        value={entry.comments}
-                        onChange={handleCommentChange(entry.id)}
-                        rows={14}
-                        placeholder="Enter comments"
-                        className={classes.textarea}
-                      />
-                    </div>
-                  </Paper>
-                ))}
-              </Grid>
+                    ))
+                  ) : (
+                    <span>No Documents Uploaded</span>
+                  )}
+                </Paper>
+              ))}
+            </Grid>
+            <Grid item xs={2}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Comments</Paper>
+              {entries.map((entry) => (
+                <Paper key={entry.id} className={`${classes.paper} ${classes.overflowPaper}`}>
+                  <div className={classes.textareaContainer}>
+                    <TextareaAutosize
+                      value={entry.comments}
+                      onChange={handleCommentChange(entry.id)}
+                      rows={3}
+                      placeholder="Enter comments"
+                      className={classes.textarea}
+                    />
+                  </div>
+                </Paper>
+              ))}
             </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
     </>
   );
