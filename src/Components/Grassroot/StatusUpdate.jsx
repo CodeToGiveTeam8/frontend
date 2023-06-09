@@ -8,7 +8,7 @@ import backgroundImage from './reg.jpg';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(20),
+    marginTop: theme.spacing(5),
     marginLeft: theme.spacing(12),
    
     // Adjust margin to match NavBar height
