@@ -2,9 +2,18 @@ import React, { useState,useEffect } from 'react';
 import Cookies from 'universal-cookie';
 import '../CSSstyles/GrassrootDash.css';
 import NavBar from '../Navs/grassrootnav';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const GrassrootDashboard = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (id) => {
+    const encodedId = encodeURIComponent(id);
+    navigate(`/details/${encodedId}`);
+  };
+
   const cookies = new Cookies();  
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState([]);
@@ -14,7 +23,6 @@ const GrassrootDashboard = () => {
   };
 
   const filteredData = data?.filter((item) => {
-    
     console.log(item)
     const lowercaseQuery = searchQuery.toLowerCase();
     return (
@@ -38,6 +46,7 @@ const GrassrootDashboard = () => {
 
   const handleRowClick = (id) => {
     console.log('Clicked row with ID:', id);
+    handleNavigation(id)
   };
 
   useEffect(() => {
@@ -59,8 +68,6 @@ const GrassrootDashboard = () => {
       }
     };
 
-    
-
     fetchData();
   }, []);
 
@@ -75,7 +82,7 @@ const GrassrootDashboard = () => {
           value={searchQuery} 
           onChange={handleSearch} 
           className="search-bar" />
-        <table>
+        <table style={{cursor:'pointer'}}>
           <thead>
             <tr>
               <th>Child-Id</th>

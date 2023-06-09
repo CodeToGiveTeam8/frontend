@@ -173,11 +173,15 @@ function AddEntry() {
   }
 
   const handleOrphanageChange = (selectedOption) => {
-    if(selectedOption.__isNew__){
+    if(selectedOption && selectedOption.__isNew__){
       AddOrphanage(selectedOption.value)
+      selectedOption.__isNew__ = null
       setOphanageList(prevState => [...prevState, selectedOption]);
     }
-    setOrphanageName(selectedOption.value)
+    if(selectedOption){
+      setOrphanageName(selectedOption.value)
+      console.log(selectedOption.value)
+    }
   };
 
 
@@ -243,7 +247,7 @@ function AddEntry() {
         <Grid item xs={12} sm={6}>
        
         <CreatableSelect  required 
-        isClearable value={orphanageName} 
+        isClearable 
         options={ophanageList}
         onChange={handleOrphanageChange}
         placeholder="Orphanage"

@@ -1,20 +1,9 @@
-import React, { useState } from 'react';
-import '../CSSstyles/StatusUpdate.css';
+import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+// import { MaterialReactTable } from 'material-react-table';
+import '../CSSstyles/GDetails.css';
 import NavBar from '../Navs/grassrootnav';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-  Grid,
-  Paper,
-  FormControlLabel,
-  Checkbox,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-} from '@material-ui/core';
-import backgroundImage from './reg.jpg';
+// import bimage from "..\Images\reg.jpg"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,33 +69,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StatusUpdate() {
-  const classes = useStyles();
+function GDetails() {  
+  const initialData = [
+    { sNo: 1., step: 'Work on and complete documentation', subSteps: [{ subStep: 'Newspaper Publication', completed: false }, { subStep: 'TV Telecasting', completed: false }, { subStep: 'File Missing Compliant, if not already done', completed: false }] },
+    { sNo: 2., step: 'Submit to DCPU and get NOC', subSteps: [{ subStep: 'SubmidocumentationWorkt child’s report for DCPU for NOC', completed: false }, { subStep: 'Receive DCPU NOC', completed: false }] },
+    { sNo: 3., step: 'Work on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentation', subSteps: [{ subStep: 'Sub-step 3.1', completed: false }, { subStep: 'Sub-step 3.2', completed: false }, { subStep: 'Sub-step 3.3', completed: false }, { subStep: 'Sub-step 3.4', completed: false }] },
+  ];
 
-  const [entries, setEntries] = useState([
-    {
-      id: 1,
-      sNo: '1',
-      subProcesses: 'Work on and complete documentation',
-      documentType: [
-        'Newspaper Publication',
-        'TV Telecasting',
-        'File Missing Compliant, if not already done',
-        'Final Police Report',
-        'Medical Report for age verification (if needed)',
-      ],
-      uploadedDocuments: [],
-      comments: '',
-    },
-    {
-      id: 2,
-      sNo: '2',
-      subProcesses: 'Submit to DCPU and get NOC',
-      documentType: ['Submit child’s report for DCPU for NOC', 'Receive DCPU NOC', 'Final Report from CCI'],
-      uploadedDocuments: [],
-      comments: '',
-    },
-  ]);
+  const [data, setData] = useState(initialData);
+  const [showPopup, setShowPopup] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
   const [selectedDocument, setSelectedDocument] = useState('');
@@ -152,19 +123,104 @@ function StatusUpdate() {
     setOpenDialog(false);
   };
 
+  const APICall = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(id)
+        console.log(`http://localhost:8081/child?childId="${ChildId}"`)
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/child?childId=${ChildId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const data = responseData['data']
+        console.log(responseData)
+        console.log(data)
+        setChild(data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, [ChildId]);
+
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        console.log(`http://localhost:8081/process/progress`)
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/process/progress`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const data = responseData['data']
+        console.log(responseData)
+        console.log(data)
+        setChild(data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  },[child])
+
   return (
-    <>
-      <NavBar />
-      <div className={classes.content}>
-        <div className={classes.background} />
-        <div className={classes.root}>
-          <Grid container spacing={2}>
-            <Grid item xs={1}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  {entry.sNo}
-                </Paper>
+    <div>
+    <NavBar />
+    <div className="table-container">
+      
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>S.No.</th>
+            <th>Step</th>
+            <th>Sub-steps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, stepIndex) => (
+            <React.Fragment key={stepIndex}>
+              <tr>
+                <td rowSpan={item.subSteps.length}>{item.sNo}</td>
+                <td rowSpan={item.subSteps.length}>
+                  <Link to={`/status-update/${stepIndex + 1}`}>{item.step}</Link>
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={item.subSteps[0].completed || false}
+                    onChange={() => handleCheckboxChange(stepIndex, 0)}
+                  />
+                  {item.subSteps[0].subStep}
+                </td>
+              </tr>
+              {item.subSteps.slice(1).map((subStep, subStepIndex) => (
+                <tr key={subStepIndex}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={subStep.completed || false}
+                      onChange={() => handleCheckboxChange(stepIndex, subStepIndex + 1)}
+                    />
+                    {subStep.subStep}
+                  </td>
+                </tr>
               ))}
             </Grid>
             <Grid item xs={4}>

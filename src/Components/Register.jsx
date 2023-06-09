@@ -70,7 +70,7 @@ const Register = () => {
 
     //body to send for backend
     const objectBody = {
-      name,dob,email,mobile,password,photo,gender,role:'GRASSROOT', team_lead : teamLeadName
+      name,dob,email,mobile,password,photo,gender,role:role, team_lead : teamLeadName
     }
     console.log(objectBody)
     //the config object
@@ -211,7 +211,7 @@ const Register = () => {
                 <option value="">Select a role</option>
                 <option value="GRASSROOT">Grassroot</option>
                   <option value="OPERATION">Operation</option>
-                  <option value="TEAMLEAD">Team Lead</option>
+                  <option value="TEAM LEAD">Team Lead</option>
                 </select>
                 {role === 'GRASSROOT' && (
                 <div className="form-group">
