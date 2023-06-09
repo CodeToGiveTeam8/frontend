@@ -9,16 +9,20 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     marginTop: theme.spacing(20),
-    marginLeft: theme.spacing(12), // Adjust margin to match NavBar height
+    marginLeft: theme.spacing(12),
+   
+    // Adjust margin to match NavBar height
   },
   content: {
     position: 'relative', // Add position relative
-    minHeight: 'calc(100vh - 64px)', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
+    minHeight: '100vh', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
     paddingTop: theme.spacing(2), // Add top padding to align with NavBar
     overflow: 'hidden', // Hide overflow to prevent the background from leaking through the blurred layer
+    marginBottom: theme.spacing(10),
   },
+
   background: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     height: '100%',
@@ -27,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     filter: 'blur(3px)', // Apply the blur effect
     background: `url(${backgroundImage})`, // Apply background image
     backgroundSize: 'cover',
+    backgroundAttachment: 'fixed',
   },
   paper: {
     textAlign: 'center',
@@ -38,12 +43,16 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     width: '100%',
     overflow: 'auto', // Add overflow auto to enable scrolling when content overflows
+    display: 'flex', // Add display flex
+    flexDirection: 'column', // Add flex-direction column
+    justifyContent: 'center',
+    color: 'black',
   },
   firstRowPaper: {
     /* CSS styles for the first row */
-    backgroundColor: 'lightblue',
+    backgroundColor: 'lavender  ',
     fontWeight: 'bold',
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     height: '30%',
     marginBottom: theme.spacing(2),
   },
@@ -61,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
     height: '60px',
     overflowY: 'auto',
   },
+  documentTypes: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
 }));
 
 function StatusUpdate() {
@@ -70,19 +85,28 @@ function StatusUpdate() {
     {
       id: 1,
       sNo: '1',
-      subProcesses: 'File Missing Compliant, if not already doneFile Missing Compliant, if not already doneFile Missing Compliant, if not already done',
-      documentType: 'Copy of the complain',
+      subProcesses: 'Newspaper Publication',
+      documentType: ['Document proof'],
       uploadedDocuments: [],
       comments: '',
     },
     {
       id: 2,
       sNo: '2',
-      subProcesses: 'Process 2',
-      documentType: 'Type 2',
+      subProcesses: 'TV Telecasting',
+      documentType: ['Document proof'],
       uploadedDocuments: [],
       comments: '',
     },
+    {
+      id: 3,
+      sNo: '3',
+      subProcesses: 'File Missing Compliant, if not already done',
+      documentType: ['1. Document proof', '2. Police Complain'],
+      uploadedDocuments: [],
+      comments: '',
+    },
+    
   ]);
 
   const handleUpload = (entryId) => (event) => {
@@ -141,7 +165,16 @@ function StatusUpdate() {
               <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Document Type</Paper>
               {entries.map((entry) => (
                 <Paper key={entry.id} className={classes.paper}>
-                  {entry.documentType}
+                  {/* Use the documentTypes class to style the multiple document types */}
+                  <div className={classes.documentTypes}>
+                    {Array.isArray(entry.documentType) ? (
+                      entry.documentType.map((type, index) => (
+                        <span key={index}>{type}</span>
+                      ))
+                    ) : (
+                      <span>{entry.documentType}</span>
+                    )}
+                  </div>
                 </Paper>
               ))}
             </Grid>
