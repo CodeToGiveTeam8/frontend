@@ -188,9 +188,9 @@ function GDetails() {
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Upload Document</DialogTitle>
-        <DialogContent>
-          <p>Upload your document here...</p>
-        </DialogContent>
+        {/* <DialogContent>
+          <p>Click Upload t</p>
+        </DialogContent> */}
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
