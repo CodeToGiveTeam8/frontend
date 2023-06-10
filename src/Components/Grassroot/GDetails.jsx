@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../CSSstyles/StatusUpdate.css';
+import { useNavigate } from 'react-router-dom';
+import '../CSSstyles/GDetails.css';
 import NavBar from '../Navs/grassrootnav';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -12,22 +13,21 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TextField,
 } from '@material-ui/core';
 import backgroundImage from './reg.jpg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(5),
-    marginLeft: theme.spacing(12),
+    marginTop: theme.spacing(50),
+    marginLeft: theme.spacing(30),
     // Adjust margin to match NavBar height
   },
   content: {
-    position: 'relative', // Add position relative
-    minHeight: '100vh', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
-    paddingTop: theme.spacing(2), // Add top padding to align with NavBar
-    overflow: 'hidden', // Hide overflow to prevent the background from leaking through the blurred layer
+    position: 'relative',
+    minHeight: '100vh',
+    paddingTop: theme.spacing(2),
+    overflow: 'hidden',
     marginBottom: theme.spacing(10),
   },
   background: {
@@ -37,13 +37,13 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     width: '100%',
     zIndex: -1,
-    filter: 'blur(3px)', // Apply the blur effect
-    background: `url(${backgroundImage})`, // Apply background image
+    filter: 'blur(3px)',
+    background: `url(${backgroundImage})`,
     backgroundSize: 'cover',
     backgroundAttachment: 'fixed',
   },
   paper: {
-    textAlign: 'center',
+    textAlign: 'left',
     color: theme.palette.text.secondary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -58,11 +58,10 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
   },
   firstRowPaper: {
-    /* CSS styles for the first row */
     backgroundColor: 'lavender',
     fontWeight: 'bold',
-    paddingTop: theme.spacing(1),
-    height: '30%',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
   documentTypes: {
@@ -80,13 +79,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StatusUpdate() {
+function GDetails() {
   const classes = useStyles();
-
+  const navigate = useNavigate();
   const [entries, setEntries] = useState([
     {
       id: 1,
       sNo: '1',
+      process: 'Process 1',
       subProcesses: 'Work on and complete documentation',
       documentType: [
         'Newspaper Publication',
@@ -95,61 +95,30 @@ function StatusUpdate() {
         'Final Police Report',
         'Medical Report for age verification (if needed)',
       ],
-      uploadedDocuments: [],
-      comments: '',
     },
     {
       id: 2,
       sNo: '2',
+      process: 'Process 2',
       subProcesses: 'Submit to DCPU and get NOC',
       documentType: ['Submit child’s report for DCPU for NOC', 'Receive DCPU NOC', 'Final Report from CCI'],
-      uploadedDocuments: [],
-      comments: '',
     },
   ]);
 
-  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
-  const [selectedDocument, setSelectedDocument] = useState('');
-  const [selectedEntry, setSelectedEntry] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleCheckboxChange = (event, checked, entry) => {
+  const handleCheckboxChange = (event, checked) => {
     if (checked) {
-      setSelectedDocument('');
-      setSelectedEntry(entry);
       setOpenDialog(true);
-    } else {
-      setSelectedDocument('');
-      setSelectedEntry(null);
-      setOpenDialog(false);
-    }
-  };
-
-  const handleDocumentChange = (event) => {
-    setSelectedDocument(event.target.value);
-  };
-
-  const handleUploadDocument = () => {
-    if (selectedEntry && selectedDocument) {
-      const updatedEntries = entries.map((entry) => {
-        if (entry.id === selectedEntry.id) {
-          return {
-            ...entry,
-            uploadedDocuments: [...entry.uploadedDocuments, selectedDocument],
-          };
-        }
-        return entry;
-      });
-      setEntries(updatedEntries);
-      setSelectedDocument('');
-      setSelectedEntry(null);
-      setOpenDialog(false);
     }
   };
 
   const handleCloseDialog = () => {
-    setSelectedDocument('');
-    setSelectedEntry(null);
     setOpenDialog(false);
+  };
+  const handleUploadClick = () => {
+    handleCloseDialog();
+    navigate('/status-update');
   };
 
   return (
@@ -160,80 +129,73 @@ function StatusUpdate() {
         <div className={classes.root}>
           <Grid container spacing={2}>
             <Grid item xs={1}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  {entry.sNo}
-                </Paper>
-              ))}
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
+              </div>
             </Grid>
-            <Grid item xs={4}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-processes</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  {entry.subProcesses}
-                </Paper>
-              ))}
+            <Grid item xs={2}>
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Process</Paper>
+              </div>
             </Grid>
-            <Grid item xs={5}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Document Type</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  <div className={classes.documentTypes}>
-                    {Array.isArray(entry.documentType) ? (
-                      entry.documentType.map((type, index) => (
-                        <div key={index} className={classes.checkboxLabel}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={selectedDocument === type && selectedEntry?.id === entry.id}
-                                onChange={(event, checked) => handleCheckboxChange(event, checked, entry)}
-                              />
-                            }
-                            label={<span className={classes.checkboxText}>{type}</span>}
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <div className={classes.checkboxLabel}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              color="primary"
-                              checked={selectedDocument === entry.documentType && selectedEntry?.id === entry.id}
-                              onChange={(event, checked) => handleCheckboxChange(event, checked, entry)}
-                            />
-                          }
-                          label={<span className={classes.checkboxText}>{entry.documentType}</span>}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </Paper>
-              ))}
+            <Grid item xs={2}>
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-process</Paper>
+              </div>
             </Grid>
           </Grid>
+          {entries.map((entry) => (
+            <Grid container key={entry.id} spacing={2} style={{ display: 'flex' }}>
+              <Grid item xs={1}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.sNo}</Paper>
+                </div>
+              </Grid>
+              <Grid item xs={2}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.process}</Paper>
+                </div>
+              </Grid>
+              <Grid item xs={2}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>
+                    <div className={classes.subProcesses}>
+                      {Array.isArray(entry.documentType) ? (
+                        entry.documentType.map((subProcess, index) => (
+                          <div className={classes.checkboxLabel} key={index}>
+                            <Checkbox
+                              color="primary"
+                              onChange={handleCheckboxChange}
+                              className={classes.checkbox}
+                            />
+                            <span className={classes.checkboxText}>{subProcess}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className={classes.checkboxLabel}>
+                          <Checkbox color="primary" onChange={handleCheckboxChange} className={classes.checkbox} />
+                          <span className={classes.checkboxText}>{entry.documentType}</span>
+                        </div>
+                      )}
+                    </div>
+                  </Paper>
+                </div>
+              </Grid>
+            </Grid>
+          ))}
         </div>
       </div>
 
-      {/* Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Upload Document</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Select Document"
-            value={selectedDocument}
-            onChange={handleDocumentChange}
-            fullWidth
-            variant="outlined"
-          />
+          <p>Upload your document here...</p>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleUploadDocument} color="primary">
+          <Button onClick={handleCloseDialog} color="primary">
             Upload
           </Button>
         </DialogActions>
@@ -242,4 +204,4 @@ function StatusUpdate() {
   );
 }
 
-export default StatusUpdate;
+export default GDetails;
