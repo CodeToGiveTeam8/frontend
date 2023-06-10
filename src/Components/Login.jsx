@@ -39,10 +39,15 @@ function Login() {
       body:objectBody
     }
     const responseData = await getAccessToken(configObject)
-    const accessToken = responseData['access-token']
-    addCookies(accessToken)
-    //navigating after successful login
-    navigate('/grassDashboard');
+    if(responseData["access-token"]){
+      console.log(responseData)
+      const accessToken = responseData['access-token']
+      addCookies(accessToken)
+      //navigating after successful login
+      navigate('/grassDashboard');
+    }else{
+      alert("Invalid credentials")
+    }
   }
   return (
     <div>

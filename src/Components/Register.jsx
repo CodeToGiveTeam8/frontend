@@ -105,7 +105,6 @@ const Register = () => {
   const [message, setMessage] = useState('');
 
   const handlePhotoChange = (event) => {
-    console.log(event.target.files[0])
     const file = event.target.files[0];
     const reader = new FileReader();
 
@@ -116,6 +115,32 @@ const Register = () => {
 
     reader.readAsDataURL(file);
   };
+
+  // const uploadFile = async (file) => {
+  //   const presignedUrl = getPresignedUrl(); // Replace with your code to get the presigned URL
+  
+  //   try {
+  //     const response = await fetch(presignedUrl, {
+  //       method: 'PUT',
+  //       body: file,
+  //       headers: {
+  //         'Content-Type': file.type,
+  //       },
+  //     });
+  
+  //     if (response.ok) {
+  //       console.log('File uploaded successfully');
+  //       // Handle success case
+  //     } else {
+  //       console.error('File upload failed');
+  //       // Handle error case
+  //     }
+  //   } catch (error) {
+  //     console.error('File upload failed:', error);
+  //     // Handle error case
+  //   }
+  // };
+  
 
   return (
     <div style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center"}}>

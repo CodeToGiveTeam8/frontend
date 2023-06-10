@@ -4,8 +4,6 @@ import '../CSSstyles/GrassrootDash.css';
 import NavBar from '../Navs/grassrootnav';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const GrassrootDashboard = () => {
   const navigate = useNavigate();
 
@@ -14,7 +12,7 @@ const GrassrootDashboard = () => {
     navigate(`/details/${encodedId}`);
   };
 
-  const cookies = new Cookies();  
+  const cookies = new Cookies(); 
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState([]);
 

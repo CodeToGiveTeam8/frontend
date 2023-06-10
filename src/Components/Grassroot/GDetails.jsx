@@ -1,9 +1,22 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-// import { MaterialReactTable } from 'material-react-table';
-import '../CSSstyles/GDetails.css';
+import React, { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import '../CSSstyles/StatusUpdate.css';
 import NavBar from '../Navs/grassrootnav';
-// import bimage from "..\Images\reg.jpg"
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Grid,
+  Paper,
+  FormControlLabel,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@material-ui/core';
+import backgroundImage from './reg.jpg';
+import Cookies from 'universal-cookie';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,19 +82,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GDetails() {  
-  const initialData = [
-    { sNo: 1., step: 'Work on and complete documentation', subSteps: [{ subStep: 'Newspaper Publication', completed: false }, { subStep: 'TV Telecasting', completed: false }, { subStep: 'File Missing Compliant, if not already done', completed: false }] },
-    { sNo: 2., step: 'Submit to DCPU and get NOC', subSteps: [{ subStep: 'SubmidocumentationWorkt child’s report for DCPU for NOC', completed: false }, { subStep: 'Receive DCPU NOC', completed: false }] },
-    { sNo: 3., step: 'Work on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentationWork on and complete documentation', subSteps: [{ subStep: 'Sub-step 3.1', completed: false }, { subStep: 'Sub-step 3.2', completed: false }, { subStep: 'Sub-step 3.3', completed: false }, { subStep: 'Sub-step 3.4', completed: false }] },
-  ];
-
-  const [data, setData] = useState(initialData);
-  const [showPopup, setShowPopup] = useState(false);
+function StatusUpdate() {
+  const cookies = new Cookies();  
+  const { id } = useParams();
+  const childId = decodeURIComponent(id);
+  const classes = useStyles();
+  const [entries, setEntries] = useState([]);
+  const [finished,setFinished] = useState([])
+  const [working,setWorking] = useState([])
+  const [notStarted,setNotStarted] = useState([])
 
   const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
   const [selectedDocument, setSelectedDocument] = useState('');
   const [selectedEntry, setSelectedEntry] = useState(null);
+
+  const APICall = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/process/progress?childId=${childId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const data = responseData['data']
+        console.log(data)
+        setFinished(data.finished)
+        setWorking(data.working)
+        setNotStarted(data.notStarted)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, [childId]); 
 
   const handleCheckboxChange = (event, checked, entry) => {
     if (checked) {
@@ -123,111 +169,46 @@ function GDetails() {
     setOpenDialog(false);
   };
 
-  const APICall = (configObject)=>{
-    return new Promise((resolve,reject)=>{
-      fetch(configObject.url,{
-        method:configObject.method?configObject.method:'GET',
-        body:configObject.body?JSON.stringify(configObject.body):null,
-        headers:configObject.headers?configObject.headers:{},
-      }).then((response)=>resolve(response.json()))
-    })
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log(id)
-        console.log(`http://localhost:8081/child?childId="${ChildId}"`)
-        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
-        const configObject = {
-          url:`http://localhost:8081/child?childId=${ChildId}`,
-          method:'GET',
-          headers:{'Content-Type':'application/json','Authorization': token},
-        }
-        const responseData = await APICall(configObject)
-        const data = responseData['data']
-        console.log(responseData)
-        console.log(data)
-        setChild(data)
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchData();
-  }, [ChildId]);
-
-  useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        console.log(`http://localhost:8081/process/progress`)
-        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
-        const configObject = {
-          url:`http://localhost:8081/process/progress`,
-          method:'GET',
-          headers:{'Content-Type':'application/json','Authorization': token},
-        }
-        const responseData = await APICall(configObject)
-        const data = responseData['data']
-        console.log(responseData)
-        console.log(data)
-        setChild(data)
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchData();
-  },[child])
-
   return (
-    <div>
-    <NavBar />
-    <div className="table-container">
-      
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>S.No.</th>
-            <th>Step</th>
-            <th>Sub-steps</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, stepIndex) => (
-            <React.Fragment key={stepIndex}>
-              <tr>
-                <td rowSpan={item.subSteps.length}>{item.sNo}</td>
-                <td rowSpan={item.subSteps.length}>
-                  <Link to={`/status-update/${stepIndex + 1}`}>{item.step}</Link>
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={item.subSteps[0].completed || false}
-                    onChange={() => handleCheckboxChange(stepIndex, 0)}
-                  />
-                  {item.subSteps[0].subStep}
-                </td>
-              </tr>
-              {item.subSteps.slice(1).map((subStep, subStepIndex) => (
-                <tr key={subStepIndex}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={subStep.completed || false}
-                      onChange={() => handleCheckboxChange(stepIndex, subStepIndex + 1)}
-                    />
-                    {subStep.subStep}
-                  </td>
-                </tr>
+    <>
+      <NavBar />
+      <div className={classes.content}>
+        <div className={classes.background} />
+        <div className={classes.root}>
+          <Grid container spacing={2}x>
+            <Grid item xs={1}>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
+              {finished && finished.length>0 && finished.map((entry) => (
+                <Paper key={entry.ProcessId} className={classes.paper}>
+                  {entry.ProcessId}
+                </Paper>
+              ))}
+              {working && working.length>0 && working.map((entry) => (
+                <Paper key={entry.ProcessId} className={classes.paper}>
+                  {entry.ProcessId}
+                </Paper>
+              ))}
+              {notStarted && notStarted.length>0 && notStarted.map((entry) => (
+                <Paper key={entry.id} className={classes.paper}>
+                  {entry.id}
+                </Paper>
               ))}
             </Grid>
             <Grid item xs={4}>
               <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-processes</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  {entry.subProcesses}
+              {finished && finished.length>0 && finished.map((entry) => (
+                <Paper key={entry.subProcess.id} className={classes.paper}>
+                  {entry.subProcess.name}
+                </Paper>
+              ))}
+              {working && working.length>0 && working.map((entry) => (
+                <Paper key={entry.subProcess.id} className={classes.paper}>
+                  {entry.subProcess.name}
+                </Paper>
+              ))}
+              {notStarted && notStarted.length>0 && notStarted.map((entry) => (
+                <Paper key={entry.subProcess.id} className={classes.paper}>
+                  {entry.subProcess.name}
                 </Paper>
               ))}
             </Grid>
