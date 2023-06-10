@@ -110,19 +110,58 @@ function GDetails() {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleCheckboxChange = (subProcess,event,checked,index_1,index_2) => {
+  const changeStatus = async(subProcess,val) =>{
+    const ChildId = subProcess.ChildId
+    const ProcessId = subProcess.ProcessId
+    const SubProcessId = subProcess.SubProcessId
+    console.log(ChildId,ProcessId,SubProcessId,val)
+    var url = ""
+    if(val=="DONE"){
+      url = "http://localhost:8081/subtask/done"
+    }else{
+      url = "http://localhost:8081/subtask/notdone"
+    }
+
+    const objectBody = {ChildId,ProcessId,SubProcessId}
+    const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+    const configObject = {
+      url: url,
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization': token},
+      body:objectBody
+    }
+    const res = await APICall(configObject)
+    const res_code = await res[0]
+    const responseData = await res[1]
+    if(res_code==400){
+      alert("Uplaod file first")
+      const encodedChildId = encodeURIComponent(ChildId);
+      const encodedProcessId = encodeURIComponent(ProcessId);
+      const encodedSubProcessId = encodeURIComponent(SubProcessId);
+      console.log(`/status-update/${encodedChildId}/${encodedProcessId}/${encodedSubProcessId}`)
+      navigate(`/status-update/${encodedChildId}/${encodedProcessId}/${encodedSubProcessId}`)
+      return false
+    }
+    console.log(await res[0])
+    // const data = responseData['data']
+    console.log(responseData)
+    return true
+  }
+
+  const handleCheckboxChange = async(subProcess,event,checked,index_1,index_2) => {
     var val = "NOT DONE"
     if(checked){
       val = "DONE"
+    } 
+
+    if(await changeStatus(subProcess,val)){
+      setEntries(prevData => {
+        const newData = [...prevData];
+        newData[index_1].subProcesses[index_2].status = val;
+        return newData;
+      });
     }
-    setEntries(prevData => {
-      const newData = [...prevData];
-      newData[index_1].subProcesses[index_2].status = val;
-      return newData;
-    });
-    if (checked) {
-      setOpenDialog(true);
-    }
+
   };
 
   const handleCloseDialog = () => {
@@ -139,7 +178,7 @@ function GDetails() {
         method:configObject.method?configObject.method:'GET',
         body:configObject.body?JSON.stringify(configObject.body):null,
         headers:configObject.headers?configObject.headers:{},
-      }).then((response)=>resolve(response.json()))
+      }).then((response)=>resolve([response.status,response.json()]))
     })
   }
 
@@ -153,7 +192,8 @@ function GDetails() {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await APICall(configObject)
+        const res = await APICall(configObject)
+        const responseData = await res[1]
         const data = responseData['data']
         console.log(data)
         var r_data = []
