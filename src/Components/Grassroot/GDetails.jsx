@@ -1,8 +1,9 @@
 import React, { useState,useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import '../CSSstyles/StatusUpdate.css';
+import { useNavigate } from 'react-router-dom';
+import '../CSSstyles/GDetails.css';
 import NavBar from '../Navs/grassrootnav';
 import { makeStyles } from '@material-ui/core/styles';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Paper,
@@ -13,7 +14,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TextField,
 } from '@material-ui/core';
 import backgroundImage from './reg.jpg';
 import Cookies from 'universal-cookie';
@@ -21,15 +21,15 @@ import Cookies from 'universal-cookie';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(5),
-    marginLeft: theme.spacing(12),
+    marginTop: theme.spacing(50),
+    marginLeft: theme.spacing(30),
     // Adjust margin to match NavBar height
   },
   content: {
-    position: 'relative', // Add position relative
-    minHeight: '100vh', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
-    paddingTop: theme.spacing(2), // Add top padding to align with NavBar
-    overflow: 'hidden', // Hide overflow to prevent the background from leaking through the blurred layer
+    position: 'relative',
+    minHeight: '100vh',
+    paddingTop: theme.spacing(2),
+    overflow: 'hidden',
     marginBottom: theme.spacing(10),
   },
   background: {
@@ -39,13 +39,13 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     width: '100%',
     zIndex: -1,
-    filter: 'blur(3px)', // Apply the blur effect
-    background: `url(${backgroundImage})`, // Apply background image
+    filter: 'blur(3px)',
+    background: `url(${backgroundImage})`,
     backgroundSize: 'cover',
     backgroundAttachment: 'fixed',
   },
   paper: {
-    textAlign: 'center',
+    textAlign: 'left',
     color: theme.palette.text.secondary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -60,11 +60,10 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
   },
   firstRowPaper: {
-    /* CSS styles for the first row */
     backgroundColor: 'lavender',
     fontWeight: 'bold',
-    paddingTop: theme.spacing(1),
-    height: '30%',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
   documentTypes: {
@@ -82,19 +81,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StatusUpdate() {
-  const cookies = new Cookies();  
-  const { id } = useParams();
-  const childId = decodeURIComponent(id);
+function GDetails() {
   const classes = useStyles();
-  const [entries, setEntries] = useState([]);
-  const [finished,setFinished] = useState([])
-  const [working,setWorking] = useState([])
-  const [notStarted,setNotStarted] = useState([])
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const cookies = new Cookies()
+  const ChildId = decodeURIComponent(id);
+  const [entries, setEntries] = useState([
+    // {
+    //   id: 1,
+    //   sNo: '1',
+    //   process: 'Process 1',
+    //   subProcesses: [
+    //     'Newspaper Publication',
+    //     'TV Telecasting',
+    //     'File Missing Compliant, if not already done',
+    //     'Final Police Report',
+    //     'Medical Report for age verification (if needed)',
+    //   ],
+    // },
+    // {
+    //   id: 2,
+    //   sNo: '2',
+    //   process: 'Process 2',
+    //   subProcesses: ['Submit child’s report for DCPU for NOC', 'Receive DCPU NOC', 'Final Report from CCI'],
+    // },
+  ]);
 
-  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
-  const [selectedDocument, setSelectedDocument] = useState('');
-  const [selectedEntry, setSelectedEntry] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleCheckboxChange = (subProcess,event,checked,index_1,index_2) => {
+    var val = "NOT DONE"
+    if(checked){
+      val = "DONE"
+    }
+    setEntries(prevData => {
+      const newData = [...prevData];
+      newData[index_1].subProcesses[index_2].status = val;
+      return newData;
+    });
+    if (checked) {
+      setOpenDialog(true);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleUploadClick = () => {
+    handleCloseDialog();
+    navigate('/status-update');
+  };
 
   const APICall = (configObject)=>{
     return new Promise((resolve,reject)=>{
@@ -106,68 +143,72 @@ function StatusUpdate() {
     })
   }
 
-  useEffect(() => {
+  useEffect(()=>{
     const fetchData = async () => {
       try {
+        console.log(`http://localhost:8081/process/progress?childId=${ChildId}`)
         const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
         const configObject = {
-          url:`http://localhost:8081/process/progress?childId=${childId}`,
+          url:`http://localhost:8081/process/progress?childId=${ChildId}`,
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
         const responseData = await APICall(configObject)
         const data = responseData['data']
         console.log(data)
-        setFinished(data.finished)
-        setWorking(data.working)
-        setNotStarted(data.notStarted)
+        var r_data = []
+        var val = 1
+
+        for(let ele of data.finished){
+          let curr_ele = {}
+          curr_ele.sNo = val
+          val+=1
+          curr_ele.id = ele.id
+          curr_ele.status = "DONE"
+          curr_ele.process = ele.name
+          curr_ele.subProcesses = []
+          for(let ele1 of ele.subProcess){
+            curr_ele.subProcesses.push(ele1)
+          }
+          r_data.push(curr_ele)
+        }
+
+        for(let ele of data.working){
+          let curr_ele = {}
+          curr_ele.id = ele.id
+          curr_ele.sNo = val
+          val+=1
+          curr_ele.process = ele.name
+          curr_ele.status = "WORKING"
+          curr_ele.subProcesses = []
+          for(let ele1 of ele.subProcess){
+            curr_ele.subProcesses.push(ele1)
+          }
+          r_data.push(curr_ele)
+        }
+
+        for(let ele of data.notStarted){
+          let curr_ele = {}
+          curr_ele.id = ele.id
+          curr_ele.sNo = val
+          val+=1
+          curr_ele.process = ele.name
+          curr_ele.status = "NOT STARTED"
+          curr_ele.subProcesses = []
+          for(let ele1 of ele.subProcess){
+            curr_ele.subProcesses.push(ele1)
+          }
+          r_data.push(curr_ele)
+        }
+        console.log("r_data : ",r_data)
+        setEntries(r_data)
       } catch (error) {
         console.error('Error:', error);
       }
     };
 
     fetchData();
-  }, [childId]); 
-
-  const handleCheckboxChange = (event, checked, entry) => {
-    if (checked) {
-      setSelectedDocument('');
-      setSelectedEntry(entry);
-      setOpenDialog(true);
-    } else {
-      setSelectedDocument('');
-      setSelectedEntry(null);
-      setOpenDialog(false);
-    }
-  };
-
-  const handleDocumentChange = (event) => {
-    setSelectedDocument(event.target.value);
-  };
-
-  const handleUploadDocument = () => {
-    if (selectedEntry && selectedDocument) {
-      const updatedEntries = entries.map((entry) => {
-        if (entry.id === selectedEntry.id) {
-          return {
-            ...entry,
-            uploadedDocuments: [...entry.uploadedDocuments, selectedDocument],
-          };
-        }
-        return entry;
-      });
-      setEntries(updatedEntries);
-      setSelectedDocument('');
-      setSelectedEntry(null);
-      setOpenDialog(false);
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setSelectedDocument('');
-    setSelectedEntry(null);
-    setOpenDialog(false);
-  };
+  },[ChildId])
 
   return (
     <>
@@ -175,102 +216,71 @@ function StatusUpdate() {
       <div className={classes.content}>
         <div className={classes.background} />
         <div className={classes.root}>
-          <Grid container spacing={2}x>
+          <Grid container spacing={2}>
             <Grid item xs={1}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
-              {finished && finished.length>0 && finished.map((entry) => (
-                <Paper key={entry.ProcessId} className={classes.paper}>
-                  {entry.ProcessId}
-                </Paper>
-              ))}
-              {working && working.length>0 && working.map((entry) => (
-                <Paper key={entry.ProcessId} className={classes.paper}>
-                  {entry.ProcessId}
-                </Paper>
-              ))}
-              {notStarted && notStarted.length>0 && notStarted.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  {entry.id}
-                </Paper>
-              ))}
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
+              </div>
             </Grid>
-            <Grid item xs={4}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-processes</Paper>
-              {finished && finished.length>0 && finished.map((entry) => (
-                <Paper key={entry.subProcess.id} className={classes.paper}>
-                  {entry.subProcess.name}
-                </Paper>
-              ))}
-              {working && working.length>0 && working.map((entry) => (
-                <Paper key={entry.subProcess.id} className={classes.paper}>
-                  {entry.subProcess.name}
-                </Paper>
-              ))}
-              {notStarted && notStarted.length>0 && notStarted.map((entry) => (
-                <Paper key={entry.subProcess.id} className={classes.paper}>
-                  {entry.subProcess.name}
-                </Paper>
-              ))}
+            <Grid item xs={2}>
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Process</Paper>
+              </div>
             </Grid>
-            <Grid item xs={5}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Document Type</Paper>
-              {entries.map((entry) => (
-                <Paper key={entry.id} className={classes.paper}>
-                  <div className={classes.documentTypes}>
-                    {Array.isArray(entry.documentType) ? (
-                      entry.documentType.map((type, index) => (
-                        <div key={index} className={classes.checkboxLabel}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={selectedDocument === type && selectedEntry?.id === entry.id}
-                                onChange={(event, checked) => handleCheckboxChange(event, checked, entry)}
-                              />
-                            }
-                            label={<span className={classes.checkboxText}>{type}</span>}
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <div className={classes.checkboxLabel}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              color="primary"
-                              checked={selectedDocument === entry.documentType && selectedEntry?.id === entry.id}
-                              onChange={(event, checked) => handleCheckboxChange(event, checked, entry)}
-                            />
-                          }
-                          label={<span className={classes.checkboxText}>{entry.documentType}</span>}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </Paper>
-              ))}
+            <Grid item xs={2}>
+              <div className={classes.headerCell}>
+                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-process</Paper>
+              </div>
             </Grid>
           </Grid>
+          {entries.map((entry,index_1) => (
+            <Grid container key={entry.id} spacing={2} style={{ display: 'flex' }}>
+              <Grid item xs={1}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.sNo}</Paper>
+                </div>
+              </Grid>
+              <Grid item xs={2}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.process}</Paper>
+                </div>
+              </Grid>
+              <Grid item xs={2}>
+                <div className={classes.cell}>
+                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>
+                    <div className={classes.subProcesses}>
+                      {Array.isArray(entry.subProcesses) && (
+                        entry.subProcesses.map((subProcess, index_2) => (
+                          <div className={classes.checkboxLabel} key={subProcess.id}>
+                            <Checkbox
+                              color="primary"
+                              checked={subProcess.status == "DONE" ? true : false}
+                              onChange={(event, checked)=>{handleCheckboxChange(subProcess,event,checked,index_1,index_2)}}
+                              className={classes.checkbox}
+                            />
+                            <span className={classes.checkboxText}>{subProcess.name}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </Paper>
+                </div>
+              </Grid>
+            </Grid>
+          ))}
         </div>
       </div>
 
-      {/* Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Upload Document</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Select Document"
-            value={selectedDocument}
-            onChange={handleDocumentChange}
-            fullWidth
-            variant="outlined"
-          />
+          <p>Upload the Document</p>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleUploadDocument} color="primary">
+          <Button onClick={handleCloseDialog} color="primary">
             Upload
           </Button>
         </DialogActions>
@@ -279,4 +289,4 @@ function StatusUpdate() {
   );
 }
 
-export default StatusUpdate;
+export default GDetails;
