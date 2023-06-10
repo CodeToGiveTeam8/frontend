@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../CSSstyles/OperationsDash.css';
-import Headerl from '../Headerl';
+import Headerl from '../Navs/operationsnav';
 
 const OperationsDashboard = () => {
   const [progress, setProgress] = useState({

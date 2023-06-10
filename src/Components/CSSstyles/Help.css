@@ -36,6 +36,7 @@ header h1 {
   margin-top: 150px;
   flex-grow: 1;
   margin-right: 170px;
+  
 }
 
 .faqs .faq {
@@ -43,7 +44,9 @@ header h1 {
   padding: 15px;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 2px #0000001a;
+  background-color: #FCF6F5FF
+  
 }
 
 .faqs .faq .faq-question {
@@ -51,6 +54,7 @@ header h1 {
   font-size: 20px;
   padding-right: 80px;
   transition: all 0.4s ease;
+  
 }
 
 .faqs .faq .faq-question::after {
@@ -71,10 +75,13 @@ header h1 {
   overflow: hidden;
   transition: all 0.2s ease;
   font-size: 0.8rem;
+  
+
 }
 
 .faqs .faq.open .faq-question {
   margin-bottom: 15px;
+  
 }
 
 .faqs .faq.open .faq-question::after {
@@ -85,11 +92,12 @@ header h1 {
 .faqs .faq.open .faq-answer {
   max-height: 1000px;
   opacity: 1;
+  padding-top: 7px;
 }
 
 .faq-button {
   /* Add your desired button styles here */
-  background-color: #27108d;
+  background-color: #002333;
   color: white;
   padding: 4px 12px;
   border-radius: 4px;
