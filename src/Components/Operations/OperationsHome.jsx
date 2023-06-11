@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import '../CSSstyles/OperationsHome.css';
-import Headerl from '../Headerl';
+// import Headerl from '../Headerl';
 import Cookies from 'universal-cookie';
+import Headerl from '../Navs/operationsnav';
 
 
 const OperationsHome = () => {

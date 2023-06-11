@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../CSSstyles/OperationsDash.css';
 import Headerl from '../Navs/operationsnav';
-import Graph from './Graph'
+import Graph from './Graph';
 import Pie from './Pie'
 
 const OperationsDashboard = () => {
@@ -54,8 +54,14 @@ const OperationsDashboard = () => {
     <Headerl />
     <div className='container'>
     <div className="row">
-         <Graph />
-         <Pie />
+    <div className='col1'>
+    <Graph />
+    </div>
+    <div className='col1'>
+    <Pie />
+    </div>
+         
+         {/* <Pie /> */}
       </div>
       <div className="row">
         

@@ -143,7 +143,7 @@ const Register = () => {
   
 
   return (
-    <div style={{ backgroundImage:`url(${bgimage})`,backgroundRepeat:"no-repeat",backgroundSize:"cover", backgroundPosition: "center"}}>
+    <div style={{ backgroundImage: `url(${bgimage})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center", height: "100vh" }}>
       <Headerl />
       <div className="register1">
         <form onSubmit={handleSubmit} className="form-register">
