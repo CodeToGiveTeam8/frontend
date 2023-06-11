@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../CSSstyles/StatusUpdate.css';
 import NavBar from '../Navs/grassrootnav';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Paper, Button, Input, TextareaAutosize } from '@material-ui/core';
+import { Grid, Paper, Button, Input, TextareaAutosize,Checkbox } from '@material-ui/core';
 import backgroundImage from './reg.jpg';
 import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
@@ -297,6 +297,63 @@ function StatusUpdate() {
     setSubProcessIndex(index)
   }
 
+  const changeStatus = async(subProcess,val) =>{
+    const ChildId = subProcess.ChildId
+    const ProcessId = subProcess.ProcessId
+    const SubProcessId = subProcess.SubProcessId
+    var url = ""
+    if(val=="DONE"){
+      url = "http://localhost:8081/subtask/done"
+    }else{
+      url = "http://localhost:8081/subtask/notdone"
+    }
+
+    const objectBody = {ChildId,ProcessId,SubProcessId}
+    const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+    const configObject = {
+      url: url,
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization': token},
+      body:objectBody
+    }
+    const res = await APICall(configObject)
+    const res_code = await res[0]
+    const responseData = await res[1]
+    if(res_code==400){
+      alert("Upload file first")
+      return false
+    }
+    console.log(await res[0])
+    // const data = responseData['data']
+    console.log(responseData)
+    return true
+  }
+
+  const handleStatusChange = (entryId,index_1) => async(event) => {
+    var updatedVal = "NOT DONE"
+    if(event.target.checked){
+      updatedVal = "DONE"
+    }
+    let subProcess = {
+      ChildId : entries[index_1].ChildId,
+      ProcessId : entries[index_1].ProcessId,
+      SubProcessId : entries[index_1].SubProcessId
+    }
+    if(await changeStatus(subProcess,updatedVal)){
+      const updatedEntries = entries.map((entry) => {
+        
+        if (entry.id === entryId) {
+          return {
+            ...entry,
+            status: updatedVal,
+          };
+        }
+        return entry;
+      });
+      setEntries(updatedEntries);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -393,15 +450,13 @@ function StatusUpdate() {
                 </Grid>
                 <Grid item xs={2}>
                   <Paper className={`${classes.paper} ${classes.overflowPaper}`}>
-                    <div className={classes.textareaContainer}>
-                      <TextareaAutosize
-                        value={""}
-                        onChange={handleCommentChange(entry.id)}
-                        rows={3}
-                        placeholder="Enter comments"
-                        className={classes.textarea}
-                      />
-                    </div>
+                    <Checkbox
+                      checked={entry.status == "DONE" ? true : false}
+                      onChange={handleStatusChange(entry.id,index_1)}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    />
+                    Done
                   </Paper>
                 </Grid>
               </React.Fragment>

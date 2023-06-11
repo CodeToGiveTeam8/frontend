@@ -133,7 +133,11 @@ function GDetails() {
   const { id } = useParams();
   const cookies = new Cookies()
   const ChildId = decodeURIComponent(id);
-  const [imageLink,setImageLink] = useState("'")
+  const [imageLink,setImageLink] = useState("")
+  const [childID, setChildID] = useState('');
+  const [childName, setChildName] = useState('');
+  const [dob, setDOB] = useState('');
+  const [gender, setGender] = useState('');
   const [entries, setEntries] = useState([
     // {
     //   id: 1,
@@ -319,8 +323,29 @@ function GDetails() {
       }
     }
 
+    const getChildDetails = async ()=>{
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/child?childId=${ChildId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const res_data = await responseData[1]
+        setChildID(res_data.data.childId)
+        setChildName(res_data.data.name)
+        setDOB(res_data.data.dob)
+        setGender(res_data.data.gender)
+        // console.log(res_data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
     fetchData();
     getImageLink();
+    getChildDetails();
   },[ChildId])
 
   const navigateToStatusUpdate = (ind)=>{
@@ -354,6 +379,15 @@ function GDetails() {
                       variant="outlined"
                       fullWidth
                       className={classes.description}
+                      value={`Child ID: ${childID}\nChild Name: ${childName}\nDOB: ${dob}\nGender: ${gender}`}
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        const [childIDValue, childNameValue, dobValue, genderValue] = value.split('\n');
+                        setChildID(childIDValue.split(': ')[1]);
+                        setChildName(childNameValue.split(': ')[1]);
+                        setDOB(dobValue.split(': ')[1]);
+                        setGender(genderValue.split(': ')[1]);
+                      }}
                     />
                   </Paper>
                 </div>
@@ -361,53 +395,27 @@ function GDetails() {
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <div className={classes.headerCell}>
                 <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
               </div>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <div className={classes.headerCell}>
                 <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Process</Paper>
-              </div>
-            </Grid>
-            <Grid item xs={4}>
-              <div className={classes.headerCell}>
-                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-process</Paper>
               </div>
             </Grid>
           </Grid>
           {entries.map((entry,index_1) => (
             <Grid container key={entry.id} spacing={2} style={{ display: 'flex',cursor : 'pointer' }}>
-              <Grid item xs={1} onClick={() => navigateToStatusUpdate(index_1)}>
+              <Grid item xs={2} onClick={() => navigateToStatusUpdate(index_1)}>
                 <div className={classes.cell}>
                   <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.sNo}</Paper>
                 </div>
               </Grid>
-              <Grid item xs={4} onClick={() => navigateToStatusUpdate(index_1)}>
+              <Grid item xs={6} onClick={() => navigateToStatusUpdate(index_1)}>
                 <div className={classes.cell}>
                   <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.process}</Paper>
-                </div>
-              </Grid>
-              <Grid item xs={4}>
-                <div className={classes.cell}>
-                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>
-                    <div className={classes.subProcesses}>
-                      {Array.isArray(entry.subProcesses) && (
-                        entry.subProcesses.map((subProcess, index_2) => (
-                          <div className={classes.checkboxLabel} key={subProcess.id}>
-                            <Checkbox
-                              color="primary"
-                              checked={subProcess.status == "DONE" ? true : false}
-                              onChange={(event, checked)=>{handleCheckboxChange(subProcess,event,checked,index_1,index_2)}}
-                              className={classes.checkbox}
-                            />
-                            <span className={classes.checkboxText}>{subProcess.name}</span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </Paper>
                 </div>
               </Grid>
             </Grid>
