@@ -13,7 +13,7 @@ function Headerl() {
       <Nav.Item className='logoimg'>
         <img class="logoimg" src={logo} alt="logo"></img>
       </Nav.Item>
-      <Nav.Item className='dropdown'>
+      {/* <Nav.Item className='dropdown'>
             <Dropdown title="Language" className="Language" onSelect={handleItemSelect}> 
                 <Dropdown.Menu>
                     <Dropdown.Item eventKey="english">English</Dropdown.Item>
@@ -21,7 +21,7 @@ function Headerl() {
                     <Dropdown.Item eventKey="marathi">Marathi</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
-        </Nav.Item >
+        </Nav.Item > */}
     </Nav>
   );
 }

@@ -330,3 +330,4 @@ function GDetails() {
 }
 
 export default GDetails;
+

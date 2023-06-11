@@ -1,14 +1,14 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import logo from "../../Images/logoBAT.png";
 import AddEntry from "../AddEntry";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import "./styles.css";
 import Cookies from "universal-cookie";
 import { useNavigate, Link } from "react-router-dom";
@@ -68,33 +68,11 @@ const NavBar = () => {
             Add New Entry
           </Nav.Link>
         </Nav.Item>
-
-        <Nav.Item>
-          <Dropdown className="navbar-dropdown">
-            <Dropdown.Toggle
-              className="navbar-dropdown-toggle"
-              variant="outline-dark"
-              id="edit-process-dropdown"
-            >
-              Edit Process
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="navbar-dropdown-menu">
-              <Dropdown.Item className="navbar-dropdown-item">
-                Abandoned
-              </Dropdown.Item>
-              <Dropdown.Item className="navbar-dropdown-item">
-                Orphaned
-              </Dropdown.Item>
-              <Dropdown.Item className="navbar-dropdown-item">
-                Surrendered
-              </Dropdown.Item>
-              <Dropdown.Item className="navbar-dropdown-item">
-                Guardians
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+        <Nav.Item className="navbar-link">
+          <Link to="#" className="navbar-link" onClick={handleItemSelect}>
+            Edit Process
+          </Link>
         </Nav.Item>
-      </Nav>
         <Nav.Item>
           <Nav.Link className="navbar-link" onClick={handleClickOpen}>
             Get Updates
@@ -133,12 +111,18 @@ const NavBar = () => {
             Logout
           </Nav.Link>
         </Nav.Item>
-        
+      </Nav>
       {modal && (
         <div className="modal">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
-            <div style={{ height: "550px", overflow: "auto", overflowX: "hidden" }}>
+            <div
+              style={{
+                height: "550px",
+                overflow: "auto",
+                overflowX: "hidden",
+              }}
+            >
               <AddEntry />
             </div>
           </div>

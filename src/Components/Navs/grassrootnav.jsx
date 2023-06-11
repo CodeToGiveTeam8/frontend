@@ -64,7 +64,7 @@ const NavBar = () => {
           <img className="navbar-logo-image" src={logo} alt="logo" />
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link className="navbar-link" href="#">
+          <Nav.Link className="navbar-link" href="/help">
             Help
           </Nav.Link>
         </Nav.Item>

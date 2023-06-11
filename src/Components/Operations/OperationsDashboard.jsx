@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../CSSstyles/OperationsDash.css';
 import Headerl from '../Navs/operationsnav';
+import Graph from './Graph'
+import Pie from './Pie'
 
 const OperationsDashboard = () => {
   const [progress, setProgress] = useState({
@@ -12,26 +14,25 @@ const OperationsDashboard = () => {
   const [urgentCases, setUrgentCases] = useState([
     {
       id: 1,
-      name: 'John Doe',
+      name: 'Rishi Kumar',
       orphanageName: 'Hope House',
-      socialWorkerName: 'Jane Smith',
+      socialWorkerName: 'Sooraj',
       selected: false
     },
     {
       id: 2,
-      name: 'Jane Smith',
-      orphanageName: 'Sunshine Home',
-      socialWorkerName: 'John Doe',
+      name: 'Sruthi Nair',
+      orphanageName: 'Don Bosco',
+      socialWorkerName: 'Rahul Menon',
       selected: false
     },
     {
       id: 3,
-      name: 'Mark Johnson',
-      orphanageName: 'Little Angels',
-      socialWorkerName: 'Sara Williams',
+      name: 'Karthik K',
+      orphanageName: 'Little Flower',
+      socialWorkerName: 'Sara Ahmed',
       selected: false
     }
-    // Add more urgent cases as needed...
   ]);
 
   const handleCaseSelect = (id) => {
@@ -52,29 +53,12 @@ const OperationsDashboard = () => {
     <div>
     <Headerl />
     <div className='container'>
+    <div className="row">
+         <Graph />
+         <Pie />
+      </div>
       <div className="row">
-        <div className="col">
-          <div className="progress">Progress of Categories</div>
-          <div className="progress-bar-container">
-            <div
-              className="progress-bar-fill abandon"
-              style={{ width: `${progress.abandon}%` }}
-            ></div>
-            </div>
-            <div className="progress-bar-container">
-            <div
-              className="progress-bar-fill surrender"
-              style={{ width: `${progress.surrender}%` }}
-            ></div>
-            </div>
-            <div className="progress-bar-container">
-            <div
-              className="progress-bar-fill admitted"
-              style={{ width: `${progress.admitted}%` }}
-            ></div>
-          </div>
-        </div>
-        <div className="col">
+        
           <table className="table">
             <thead>
               <tr>
@@ -102,16 +86,9 @@ const OperationsDashboard = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        
       </div>
-      <div className="row">
-        <div className="col">
-          <div className="graph">Graph 1</div>
-        </div>
-        <div className="col">
-          <div className="graph">Graph 2</div>
-        </div>
-      </div>
+     
       </div>
     </div>
   );
