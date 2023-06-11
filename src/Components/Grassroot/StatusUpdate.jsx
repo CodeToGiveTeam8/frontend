@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     position: 'relative', // Add position relative
     minHeight: '100vh', // Adjust minimum height to account for NavBar (64px is the default height of NavBar)
-    paddingTop: theme.spacing(2), // Add top padding to align with NavBar
+    paddingTop: theme.spacing(4), // Add top padding to align with NavBar
     overflow: 'hidden', // Hide overflow to prevent the background from leaking through the blurred layer
     marginBottom: theme.spacing(1),
   },
@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: theme.spacing(2),
-    height: '60%',
-    marginBottom: theme.spacing(2),
+    height: '120px',
+    marginBottom: theme.spacing(0),
     width: '100%',
     overflow: 'auto', // Add overflow auto to enable scrolling when content overflows
     display: 'flex', // Add display flex
@@ -81,14 +81,28 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     textAlign: 'center',
   },
+  headerText: {
+    // position: 'absolute',
+    // top: '20px',
+    // left:'20px',
+    // marginRight: '32px',
+    color: 'white',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    marginRight:'80%',
+   marginTop:'1%'
+  },
 }));
 
 function StatusUpdate() {
   const classes = useStyles();
+  const [uploadField, setUploadField] = useState([]);
   var cookies = new Cookies()
   const { childId, processId } = useParams();
   const ChildId = decodeURIComponent(childId)
   const ProcessId = decodeURIComponent(processId)
+  const [subProcessClicked,setSubProcessClicked] = useState("")
+  const [subProcessIndex,setSubProcessIndex] = useState("")
 
   const [entries, setEntries] = useState([
     // {
@@ -180,8 +194,12 @@ function StatusUpdate() {
     return await res_data[1]
   }
 
-  const handleUpload = async(event,subProcessId,index) => {
+  const handleUpload = async(event) => {
+    // console.log(event.target.files,ChildId,subProcessClicked,subProcessIndex)
+    const subProcessId = subProcessClicked
+    const index = subProcessIndex
     const files = event.target.files;
+    console.log(files)
     if(!files || files.length==0){
       return
     }
@@ -190,6 +208,7 @@ function StatusUpdate() {
     for(let i=0;i<urls.links.length;i++){
         await uploadToS3(files[i],urls.links[i])
     }
+    console.log()
 
     const dbDocs = await addFileToDB(files,ChildId,subProcessId)
 
@@ -205,7 +224,10 @@ function StatusUpdate() {
       console.log(newData)
       return newData;
     });
-    
+
+    setEntries(entries)
+    window.location.reload();
+    ////////////////
     // const updatedEntries = entries.map((entry) => {
     //   if (entry.id === entryId) {
     //     return {
@@ -270,13 +292,19 @@ function StatusUpdate() {
     
   },[ChildId,ProcessId])
 
+  const onUpload =(subProcessId,index)=>{
+    setSubProcessClicked(subProcessId)
+    setSubProcessIndex(index)
+  }
+
   return (
     <>
       <NavBar />
+      <h5 className={classes.headerText}>{ChildId + ' > Case Progress > Process'}</h5>
       <div className={classes.content}>
         <div className={classes.background} />
         <div className={classes.root}>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             {/* Row Headers */}
             <Grid item xs={2}>
               <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
@@ -327,7 +355,7 @@ function StatusUpdate() {
                       className={classes.inputFile}
                       id={`upload-input-${entries.id}`}
                       type="file"
-                      onChange={(event)=>{ handleUpload(event,entry.SubProcessId,index_1) }}
+                      onChange={(event) => handleUpload(event)}
                     />
                     <label htmlFor={`upload-input-${entries.id}`}>
                       <Button
@@ -335,6 +363,7 @@ function StatusUpdate() {
                         color="primary"
                         component="span"
                         className={classes.uploadButton}
+                        onClick={(event)=>{ onUpload(entry.SubProcessId,index_1) }}
                       >
                         Upload
                       </Button>

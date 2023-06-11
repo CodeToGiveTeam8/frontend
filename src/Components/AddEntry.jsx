@@ -145,9 +145,8 @@ function AddEntry() {
     })
     if(responseData.status==200){
       console.log("Added successfully")
-      navigate("/grassDashboard");
+      window.location.reload();
     }
-    console.log(responseData)
     
   };
 
@@ -167,7 +166,7 @@ function AddEntry() {
       headers:configObject.headers?configObject.headers:{},
     })
     if(responseData.status==200){
-      console.log("Added successfully")
+      console.log("Successfully added orphanage")
     }
     console.log(responseData)
   }

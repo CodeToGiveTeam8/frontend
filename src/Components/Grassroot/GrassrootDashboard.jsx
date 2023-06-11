@@ -16,6 +16,7 @@ const GrassrootDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
+  const [userDetail,setUserDetail] = useState(null);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -91,7 +92,27 @@ const GrassrootDashboard = () => {
       }
     };
 
+    const fetchUserData = async () => {
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:"http://localhost:8081/user",
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const data = await responseData[1]
+        // console.log(responseData)
+        // console.log(data)
+        setUserDetail(data.data)
+        console.log(data.data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
     fetchData();
+    fetchUserData();
   }, []);
 
   const handleChange = (event) => {
@@ -102,15 +123,16 @@ const GrassrootDashboard = () => {
   return (
     <div style={{ backgroundColor:"white" }}>
     <NavBar/>
-      <div className='ophome'>
-      <h3>Grassroot Dashboard</h3>
+      <h2 style={{ marginTop: '20px' }}>Welcome {userDetail && userDetail.name}!</h2>
+      <div style={{ marginTop: '2% !important' }} className='ophome'>
+      {/* <h3>Grassroot Dashboard</h3> */}
         <input 
           type="text" 
           placeholder='Search...'
           value={searchQuery} 
           onChange={handleSearch} 
           className="search-bar" />
-        <table style={{cursor:'pointer'}}>
+        <table style={{cursor:'pointer', marginTop: '2%'}}>
           <thead>
             <tr>
               <th>Child-Id</th>
@@ -126,7 +148,9 @@ const GrassrootDashboard = () => {
             {filteredData && filteredData.map((item,ind) => (
               <tr key={item.childId}>
                 <td onClick={() => handleRowClick(item.childId)}>{item.childId}</td>
-                <td onClick={() => handleRowClick(item.childId)}>{item.name}</td>
+                <td onClick={() => handleRowClick(item.childId)}>
+                  <a href="">{item.name}</a>
+                </td>
                 <td onClick={() => handleRowClick(item.childId)}>{item.category}</td>
                 <td>
                   <select value={item.status} onChange={(e) => handleStatusChange(e,item.childId,ind)}>

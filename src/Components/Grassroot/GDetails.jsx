@@ -313,7 +313,7 @@ function GDetails() {
   return (
     <>
       <NavBar />
-      <h5 className={classes.headerText}>Rohan {' > ' }Case Progress</h5>
+      <h5 className={classes.headerText}>{ChildId +  ' > ' }Case Progress</h5>
       <div className={classes.content}>
         <div className={classes.background} />
         <div className={classes.root}>
