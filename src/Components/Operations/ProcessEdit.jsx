@@ -1,91 +1,50 @@
-import React, { useState,useEffect } from 'react';
-import '../CSSstyles/ProcessEdit.css';
-import Cookies from 'universal-cookie';
+import React, { useState } from 'react';
+import MyDropDown from './process/MyDropDown';
 
 
 function ProcessEdit() {
-  // Assuming you have an array of data containing S.No., Step, and Sub-steps
-  const initialData = [];
-  const cookies = new Cookies();  //needed to parse cookies
+  const initialData = [
+    {
+      processName : 'Abandoned',
+      processFlow : [
+        { sNo: 1, step: 'Step 1', subSteps: [{ subStep: 'Sub-step 1.1', completed: false }, { subStep: 'Sub-step 1.2', completed: false }, { subStep: 'Sub-step 1.3', completed: false }] },
+        { sNo: 2, step: 'Step 2', subSteps: [{ subStep: 'Sub-step 2.1', completed: false }, { subStep: 'Sub-step 2.2', completed: false }] },
+        { sNo: 3, step: 'Step 3', subSteps: [{ subStep: 'Sub-step 3.1', completed: false }, { subStep: 'Sub-step 3.2', completed: false }, { subStep: 'Sub-step 3.3', completed: false }, { subStep: 'Sub-step 3.4', completed: false }] },
+      ]
+    },
+    {
+      processName : 'Orphaned',
+      processFlow : [
+        { sNo: 1, step: 'Step 11', subSteps: [{ subStep: 'Sub-step 11.1', completed: false }, { subStep: 'Sub-step 11.2', completed: false }, { subStep: 'Sub-step 11.3', completed: false }] },
+        { sNo: 2, step: 'Step 21', subSteps: [{ subStep: 'Sub-step 21.1', completed: false }, { subStep: 'Sub-step 21.2', completed: false }] },
+        { sNo: 3, step: 'Step 31', subSteps: [{ subStep: 'Sub-step 31.1', completed: false }, { subStep: 'Sub-step 31.2', completed: false }, { subStep: 'Sub-step 31.3', completed: false }, { subStep: 'Sub-step 31.4', completed: false }] },
+      ]
+    },
+    {
+      processName : 'Surrendered',
+      processFlow : [
+        { sNo: 1, step: 'Step 12', subSteps: [{ subStep: 'Sub-step 12.1', completed: false }, { subStep: 'Sub-step 12.2', completed: false }, { subStep: 'Sub-step 12.3', completed: false }] },
+        { sNo: 2, step: 'Step 22', subSteps: [{ subStep: 'Sub-step 22.1', completed: false }, { subStep: 'Sub-step 22.2', completed: false }] },
+        { sNo: 3, step: 'Step 32', subSteps: [{ subStep: 'Sub-step 32.1', completed: false }, { subStep: 'Sub-step 32.2', completed: false }, { subStep: 'Sub-step 32.3', completed: false }, { subStep: 'Sub-step 32.4', completed: false }] },
+      ]
+    }
+  ];
+  const [selectedStage,setSelectedStage] = useState('');
 
-  const [data, setData] = useState(initialData);
-  const [showPopup, setShowPopup] = useState(false);
 
-  const closePopup = () => {
-    setShowPopup(false); // Close the pop-up
-  };
-
-  const getProcessData = (configObject)=>{
-    return new Promise((resolve,reject)=>{
-      fetch(configObject.url,{
-        method:configObject.method?configObject.method:'GET',
-        body:configObject.body?JSON.stringify(configObject.body):null,
-        headers:configObject.headers?configObject.headers:{},
-      }).then((response)=>resolve(response.json()))
-    })
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
-        const configObject = {
-          url:"http://localhost:8081/process/?category=ABANDONED",
-          method:'GET',
-          headers:{'Content-Type':'application/json','Authorization': token},
-        }
-        const responseData = await getProcessData(configObject)
-        const data = responseData['data']
-        setData(data)
-      } catch (error) {
-        console.error('Error:', error);
+return (
+  <div style={{marginTop:'150px'}}>
+    {initialData.map((element)=>{
+      if(selectedStage === ''){
+        return <div><button>addTask</button><MyDropDown processFlow={element.processFlow} name={element.processName} selectedStage={selectedStage} setSelectedStage = {setSelectedStage} show={true}></MyDropDown></div>
       }
-    };
-
-    fetchData();
-  }, []);
-
-  return (
-    <div className="table-container">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>S.No.</th>
-            <th>Step</th>
-            <th>Sub-steps</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, stepIndex) => (
-            <React.Fragment key={stepIndex}>
-              <tr>
-                <td rowSpan={item.subProcess.length + 1}>{item.orderNo}</td>
-                <td rowSpan={item.subProcess.length + 1}>{item.process[0].name}</td>
-              </tr>
-              {item.subProcess.map((subStep, subStepIndex) => (
-                <tr key={subStepIndex}>
-                  <td>
-                    <input disabled type="checkbox"/>
-                    {subStep.name}
-                  </td>
-                </tr>
-              ))}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-
-      {showPopup && (
-        <div className="popup-container">
-          <div className="popup">
-            <h2>Do you want to upload a file?</h2>
-            <input type="file" />
-            <button onClick={closePopup}>Close</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+      if(element.processName === selectedStage){
+        return <MyDropDown processFlow={element.processFlow} name={element.processName} selectedStage={selectedStage} setSelectedStage = {setSelectedStage} show={true}></MyDropDown>
+      }
+      return <MyDropDown processFlow={element.processFlow} name={element.processName} selectedStage={selectedStage} setSelectedStage = {setSelectedStage} show={false}></MyDropDown>
+    })}
+    {selectedStage === '' && <button>addTask</button>}
+  </div>
+)
 }
 export default ProcessEdit
