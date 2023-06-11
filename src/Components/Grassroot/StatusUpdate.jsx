@@ -379,7 +379,7 @@ function StatusUpdate() {
               <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Uploaded Documents</Paper>
             </Grid>
             <Grid item xs={2}>
-              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Comments</Paper>
+              <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Status</Paper>
             </Grid>
 
             {/* Row Data */}
