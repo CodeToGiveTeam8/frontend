@@ -47,7 +47,6 @@ const customStyles = {
   }),
 };
 
-
 const categories = ["ABANDONED", "SURRENDERED", "ORPHANED","CHILD ADMITTED IN CCI BY FAMILY"];
 
 const genders = ["MALE", "FEMALE", "OTHER"];
@@ -112,6 +111,13 @@ function AddEntry() {
     fetchData();
   }, []);
 
+  const uploadToS3 = async(file,url)=>{
+    await fetch(url, {
+      method: 'PUT',
+      body: file
+    })
+  }
+
   const handleSubmit = async(event) => {
     event.preventDefault();
     const objectBody = {
@@ -128,8 +134,6 @@ function AddEntry() {
       description : additionalDetails
     }
 
-    console.log(enrollmentDate)
-
     const token = cookies.get("accessToken");
     
     const configObject = {
@@ -145,10 +149,19 @@ function AddEntry() {
     })
     if(responseData.status==200){
       console.log("Added successfully")
-      navigate("/grassDashboard");
+      if(selectedFile){
+        const configObject = {
+              url:"http://localhost:8081/child/image",
+              method:'POST',
+              headers:{'Content-Type':'application/json', 'Authorization': token},
+              body:{"childId" : objectBody.childId}
+            }
+        var imageUploadRes = await APICall(configObject)
+        console.log(imageUploadRes.link)
+        await uploadToS3(selectedFile,imageUploadRes.link)
+        window.location.reload();
+      }
     }
-    console.log(responseData)
-    
   };
 
   const AddOrphanage = async(name)=>{
@@ -167,7 +180,7 @@ function AddEntry() {
       headers:configObject.headers?configObject.headers:{},
     })
     if(responseData.status==200){
-      console.log("Added successfully")
+      console.log("Successfully added orphanage")
     }
     console.log(responseData)
   }
@@ -188,7 +201,7 @@ function AddEntry() {
   return (
     <form onSubmit={handleSubmit}>
     <Typography variant="h4" gutterBottom>
-        Add New Entry
+        Register Child
     </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
@@ -219,7 +232,7 @@ function AddEntry() {
           <TextField
             variant="outlined"
             id="dob1"
-            label="Date of Birth (MM/DD/YYYY)"
+            label="Date of Birth (YYYY-MM-DD)"
             value={dob}
             onChange={(event) => setDob(event.target.value)}
             fullWidth
@@ -298,7 +311,7 @@ function AddEntry() {
         <Grid item xs={12} sm={6}>
           <TextField
             id="startDate"
-            label="Start Date (MM/DD/YYYY)"
+            label="Start Date (YYYY-MM-DD)"
             value={startDate}
             onChange={(event) => setStartDate(event.target.value)}
             fullWidth
@@ -311,7 +324,7 @@ function AddEntry() {
           <TextField
             required
             id="enrollmentDate"
-            label="Enrollment Date (MM/DD/YYYY)"
+            label="Enrollment Date (YYYY-MM-DD)"
             value={enrollmentDate}
             onChange={(event) => setEnrollmentDate(event.target.value)}
             fullWidth

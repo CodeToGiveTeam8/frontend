@@ -31,10 +31,7 @@ function App() {
             {/* Grassroot's children's details page */}
             {/* <Route exact path="/details" element={<GDetails />} /> */}
             <Route exact path="/details/:id" element={<GDetails />} />
-
-
-            {/* <Route exact path="/status-update" element={<StatusUpdate />} /> */}
-            <Route exact path="/status-update/:childId/:processId/:subProcessId" element={<StatusUpdate />} />
+            <Route exact path="/status-update/:childId/:processId" element={<StatusUpdate />} />
             <Route exact path="/help" element={<Help />} />
             <Route exact path="/processEdit" element={<ProcessEdit />} />
             <Route exact path="/teamleadhome" element={<TeamLeadHome />} />

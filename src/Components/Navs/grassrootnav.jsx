@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import logo from "../../Images/logoBAT.png";
 import AddEntry from "../AddEntry";
@@ -14,11 +14,10 @@ import Cookies from "universal-cookie";
 import {useNavigate, Link} from "react-router-dom";
 
 
-
 const NavBar = () => {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-
+  const [email,setEmail] = useState("");
 
   const toggleModal = () => {
     setModal(!modal);
@@ -40,10 +39,38 @@ const NavBar = () => {
     setOpen(false);
   };
 
-  const handleSubmitEmail = (e) => {
-    e.preventDefault();
-    console.log("Email submitted");
-  };
+  const APICall = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve([response.status,response.json()]))
+    })
+  }
+
+  const handleSubmitEmail = async(e) => {
+      try {
+        const body = {
+          "from" : "beckysicky@gmail.com",
+          "to" : email,
+          "subject" : "Works need to be done."
+      }
+        const cookies = new Cookies()
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:"http://localhost:8081/user/mail",
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization': token},
+          body : body,
+        }
+        const responseData = await APICall(configObject)
+        setOpen(false);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+};
+
 
   const logOut = () => {
     const cookies = new Cookies();  
@@ -51,7 +78,6 @@ const NavBar = () => {
     navigate('/');
 
   }
-
 
   const handleItemSelect = (eventKey) => {
     // Handle language selection logic here
@@ -143,6 +169,8 @@ const NavBar = () => {
             type="email"
             fullWidth
             variant="standard"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

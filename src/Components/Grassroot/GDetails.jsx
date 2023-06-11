@@ -14,23 +14,28 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  TextField,
+  Avatar,
 } from '@material-ui/core';
+import ImageIcon from '@material-ui/icons/Image';
 import backgroundImage from './reg.jpg';
 import Cookies from 'universal-cookie';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(50),
+    marginTop: theme.spacing(1),
     marginLeft: theme.spacing(30),
+    position:'relative',
+    height:'100%'
     // Adjust margin to match NavBar height
   },
   content: {
     position: 'relative',
     minHeight: '100vh',
     paddingTop: theme.spacing(2),
-    overflow: 'hidden',
-    marginBottom: theme.spacing(10),
+    marginBottom: theme.spacing(1),
+    overflowY: 'auto', // Add overflowY auto to enable vertical scrolling
   },
   background: {
     position: 'fixed',
@@ -42,18 +47,24 @@ const useStyles = makeStyles((theme) => ({
     filter: 'blur(3px)',
     background: `url(${backgroundImage})`,
     backgroundSize: 'cover',
-    backgroundAttachment: 'fixed',
+
   },
   paper: {
     textAlign: 'left',
     color: theme.palette.text.secondary,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: theme.spacing(2),
-    height: '40%',
-    marginBottom: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    marginBottom: theme.spacing(0.1),
     width: '100%',
     overflow: 'auto', // Add overflow auto to enable scrolling when content overflows
+    display: 'flex', // Add display flex
+    flexDirection: 'column', // Add flex-direction column
+    justifyContent: 'center',
+    color: 'black',
+  },
+  cellPaper: {
+    height: '120px', // Set a fixed height for the paper
     display: 'flex', // Add display flex
     flexDirection: 'column', // Add flex-direction column
     justifyContent: 'center',
@@ -62,9 +73,9 @@ const useStyles = makeStyles((theme) => ({
   firstRowPaper: {
     backgroundColor: 'lavender',
     fontWeight: 'bold',
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(0.3),
   },
   documentTypes: {
     display: 'flex',
@@ -79,6 +90,41 @@ const useStyles = makeStyles((theme) => ({
   checkboxText: {
     marginLeft: theme.spacing(1),
   },
+  descriptionBox: {
+    border: '2px solid red',
+    padding: theme.spacing(5),
+    marginBottom: '90px',
+    // paddingBottom: '100px',
+    marginLeft: '170px', // Adjust the marginLeft value to bring the description box closer
+    marginTop: '10px', // Adjust the marginTop value to bring the description box closer
+    width: '450px',
+    height:'300px',
+  },
+  description: {
+    // marginBottom: '1px',
+    height: '150px',
+    
+
+  },
+  imageIcon: {
+    fontSize: '700px',
+    color: theme.palette.common.white,
+    width: '200px',
+    height: '200px',
+    marginTop: '20px', // Adjust the marginTop value to bring the image icon closer
+    marginLeft: '40px', // Adjust the marginLeft value to bring the image icon closer
+  },
+  headerText: {
+    // position: 'absolute',
+    // top: '20px',
+    // left:'20px',
+    // marginRight: '32px',
+    color: 'white',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    marginRight:'85%',
+   marginTop:'1%'
+  },
 }));
 
 function GDetails() {
@@ -87,6 +133,11 @@ function GDetails() {
   const { id } = useParams();
   const cookies = new Cookies()
   const ChildId = decodeURIComponent(id);
+  const [imageLink,setImageLink] = useState("")
+  const [childID, setChildID] = useState('');
+  const [childName, setChildName] = useState('');
+  const [dob, setDOB] = useState('');
+  const [gender, setGender] = useState('');
   const [entries, setEntries] = useState([
     // {
     //   id: 1,
@@ -137,9 +188,9 @@ function GDetails() {
       alert("Uplaod file first")
       const encodedChildId = encodeURIComponent(ChildId);
       const encodedProcessId = encodeURIComponent(ProcessId);
-      const encodedSubProcessId = encodeURIComponent(SubProcessId);
-      console.log(`/status-update/${encodedChildId}/${encodedProcessId}/${encodedSubProcessId}`)
-      navigate(`/status-update/${encodedChildId}/${encodedProcessId}/${encodedSubProcessId}`)
+      // const encodedSubProcessId = encodeURIComponent(SubProcessId);
+      console.log(`/status-update/${encodedChildId}/${encodedProcessId}`)
+      navigate(`/status-update/${encodedChildId}/${encodedProcessId}`)
       return false
     }
     console.log(await res[0])
@@ -167,6 +218,7 @@ function GDetails() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
   const handleUploadClick = () => {
     handleCloseDialog();
     navigate('/status-update');
@@ -199,47 +251,54 @@ function GDetails() {
         var r_data = []
         var val = 1
 
-        for(let ele of data.finished){
-          let curr_ele = {}
-          curr_ele.sNo = val
-          val+=1
-          curr_ele.id = ele.id
-          curr_ele.status = "DONE"
-          curr_ele.process = ele.name
-          curr_ele.subProcesses = []
-          for(let ele1 of ele.subProcess){
-            curr_ele.subProcesses.push(ele1)
+        if(data.finished.length>0){
+          for(let ele of data.finished){
+            let curr_ele = {}
+            curr_ele.sNo = val
+            val+=1
+            curr_ele.id = ele.id
+            curr_ele.status = "DONE"
+            curr_ele.process = ele.name
+            curr_ele.subProcesses = []
+            for(let ele1 of ele.subProcess){
+              curr_ele.subProcesses.push(ele1)
+            }
+            r_data.push(curr_ele)
           }
-          r_data.push(curr_ele)
         }
 
-        for(let ele of data.working){
-          let curr_ele = {}
-          curr_ele.id = ele.id
-          curr_ele.sNo = val
-          val+=1
-          curr_ele.process = ele.name
-          curr_ele.status = "WORKING"
-          curr_ele.subProcesses = []
-          for(let ele1 of ele.subProcess){
-            curr_ele.subProcesses.push(ele1)
+        if(data.working.length>0){
+          for(let ele of data.working){
+            let curr_ele = {}
+            curr_ele.id = ele.id
+            curr_ele.sNo = val
+            val+=1
+            curr_ele.process = ele.name
+            curr_ele.status = "WORKING"
+            curr_ele.subProcesses = []
+            for(let ele1 of ele.subProcess){
+              curr_ele.subProcesses.push(ele1)
+            }
+            r_data.push(curr_ele)
           }
-          r_data.push(curr_ele)
         }
 
-        for(let ele of data.notStarted){
-          let curr_ele = {}
-          curr_ele.id = ele.id
-          curr_ele.sNo = val
-          val+=1
-          curr_ele.process = ele.name
-          curr_ele.status = "NOT STARTED"
-          curr_ele.subProcesses = []
-          for(let ele1 of ele.subProcess){
-            curr_ele.subProcesses.push(ele1)
+        if(data.notStarted.length>0){
+          for(let ele of data.notStarted){
+            let curr_ele = {}
+            curr_ele.id = ele.id
+            curr_ele.sNo = val
+            val+=1
+            curr_ele.process = ele.name
+            curr_ele.status = "NOT STARTED"
+            curr_ele.subProcesses = []
+            for(let ele1 of ele.subProcess){
+              curr_ele.subProcesses.push(ele1)
+            }
+            r_data.push(curr_ele)
           }
-          r_data.push(curr_ele)
         }
+
         console.log("r_data : ",r_data)
         setEntries(r_data)
       } catch (error) {
@@ -247,63 +306,116 @@ function GDetails() {
       }
     };
 
+    const getImageLink = async () => {
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/child/image?childId=${ChildId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        // console.log(responseData)
+        const res_data = await responseData[1]
+        setImageLink(res_data.link)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    const getChildDetails = async ()=>{
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/child?childId=${ChildId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        const res_data = await responseData[1]
+        setChildID(res_data.data.childId)
+        setChildName(res_data.data.name)
+        setDOB(res_data.data.dob)
+        setGender(res_data.data.gender)
+        // console.log(res_data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
     fetchData();
+    getImageLink();
+    getChildDetails();
   },[ChildId])
+
+  const navigateToStatusUpdate = (ind)=>{
+    const encodedChildId = encodeURIComponent(ChildId);
+    const encodedProcessId = encodeURIComponent(entries[ind].id);
+    navigate(`/status-update/${encodedChildId}/${encodedProcessId}`);
+  }
 
   return (
     <>
       <NavBar />
+      <h5 className={classes.headerText}>{ChildId +  ' > ' }Case Progress</h5>
       <div className={classes.content}>
         <div className={classes.background} />
         <div className={classes.root}>
           <Grid container spacing={2}>
-            <Grid item xs={1}>
+            <Grid item xs={10}>
+              <div style={{ display: 'flex' }}>
+                <div>
+                  <Avatar src={imageLink} className={classes.imageIcon}>
+                    <ImageIcon />
+                  </Avatar>
+                </div>
+                <div>
+                  <Paper className={classes.descriptionBox}>
+                    <TextField
+                      id="description"
+                      label="Description"
+                      multiline
+                      rows={9}
+                      variant="outlined"
+                      fullWidth
+                      className={classes.description}
+                      value={`Child ID: ${childID}\nChild Name: ${childName}\nDOB: ${dob}\nGender: ${gender}`}
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        const [childIDValue, childNameValue, dobValue, genderValue] = value.split('\n');
+                        setChildID(childIDValue.split(': ')[1]);
+                        setChildName(childNameValue.split(': ')[1]);
+                        setDOB(dobValue.split(': ')[1]);
+                        setGender(genderValue.split(': ')[1]);
+                      }}
+                    />
+                  </Paper>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={2}>
               <div className={classes.headerCell}>
                 <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>S.No.</Paper>
               </div>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={6}>
               <div className={classes.headerCell}>
                 <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Process</Paper>
               </div>
             </Grid>
-            <Grid item xs={2}>
-              <div className={classes.headerCell}>
-                <Paper className={`${classes.paper} ${classes.firstRowPaper}`}>Sub-process</Paper>
-              </div>
-            </Grid>
           </Grid>
           {entries.map((entry,index_1) => (
-            <Grid container key={entry.id} spacing={2} style={{ display: 'flex' }}>
-              <Grid item xs={1}>
+            <Grid container key={entry.id} spacing={2} style={{ display: 'flex',cursor : 'pointer' }}>
+              <Grid item xs={2} onClick={() => navigateToStatusUpdate(index_1)}>
                 <div className={classes.cell}>
                   <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.sNo}</Paper>
                 </div>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={6} onClick={() => navigateToStatusUpdate(index_1)}>
                 <div className={classes.cell}>
                   <Paper className={`${classes.paper} ${classes.cellPaper}`}>{entry.process}</Paper>
-                </div>
-              </Grid>
-              <Grid item xs={2}>
-                <div className={classes.cell}>
-                  <Paper className={`${classes.paper} ${classes.cellPaper}`}>
-                    <div className={classes.subProcesses}>
-                      {Array.isArray(entry.subProcesses) && (
-                        entry.subProcesses.map((subProcess, index_2) => (
-                          <div className={classes.checkboxLabel} key={subProcess.id}>
-                            <Checkbox
-                              color="primary"
-                              checked={subProcess.status == "DONE" ? true : false}
-                              onChange={(event, checked)=>{handleCheckboxChange(subProcess,event,checked,index_1,index_2)}}
-                              className={classes.checkbox}
-                            />
-                            <span className={classes.checkboxText}>{subProcess.name}</span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </Paper>
                 </div>
               </Grid>
             </Grid>
