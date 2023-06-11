@@ -52,6 +52,10 @@ const NavBar = () => {
     // Handle language selection logic here
   };
 
+  const navigateTo = () =>{
+    navigate("/operationsDashoard");
+  }
+
   return (
     <div>
       <Nav className="navbar-container">
@@ -61,6 +65,11 @@ const NavBar = () => {
         <Nav.Item>
           <Nav.Link className="navbar-link" href="#">
             Help
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link className="navbar-link" onClick={navigateTo}>
+          Dasboard
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
