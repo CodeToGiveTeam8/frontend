@@ -133,6 +133,7 @@ function GDetails() {
   const { id } = useParams();
   const cookies = new Cookies()
   const ChildId = decodeURIComponent(id);
+  const [imageLink,setImageLink] = useState("'")
   const [entries, setEntries] = useState([
     // {
     //   id: 1,
@@ -301,7 +302,25 @@ function GDetails() {
       }
     };
 
+    const getImageLink = async () => {
+      try {
+        const token = cookies.get("accessToken"); // to get token already present.If there is token ,login page should not be rendered
+        const configObject = {
+          url:`http://localhost:8081/child/image?childId=${ChildId}`,
+          method:'GET',
+          headers:{'Content-Type':'application/json','Authorization': token},
+        }
+        const responseData = await APICall(configObject)
+        // console.log(responseData)
+        const res_data = await responseData[1]
+        setImageLink(res_data.link)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
     fetchData();
+    getImageLink();
   },[ChildId])
 
   const navigateToStatusUpdate = (ind)=>{
@@ -321,7 +340,7 @@ function GDetails() {
             <Grid item xs={10}>
               <div style={{ display: 'flex' }}>
                 <div>
-                  <Avatar className={classes.imageIcon}>
+                  <Avatar src={imageLink} className={classes.imageIcon}>
                     <ImageIcon />
                   </Avatar>
                 </div>
