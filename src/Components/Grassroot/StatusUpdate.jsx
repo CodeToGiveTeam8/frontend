@@ -86,10 +86,9 @@ const useStyles = makeStyles((theme) => ({
 function StatusUpdate() {
   const classes = useStyles();
   var cookies = new Cookies()
-  const { childId, processId,subProcessId } = useParams();
+  const { childId, processId } = useParams();
   const ChildId = decodeURIComponent(childId)
   const ProcessId = decodeURIComponent(processId)
-  const SubProcessId = decodeURIComponent(subProcessId)
 
   const [entries, setEntries] = useState([
     // {
@@ -269,7 +268,7 @@ function StatusUpdate() {
     }
     fetchdata()
     
-  },[ChildId,ProcessId,SubProcessId])
+  },[ChildId,ProcessId])
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import logo from "../../Images/logoBAT.png";
 import AddEntry from "../AddEntry";
@@ -14,11 +14,10 @@ import Cookies from "universal-cookie";
 import {useNavigate, Link} from "react-router-dom";
 
 
-
 const NavBar = () => {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-
+  const emailRef = useRef(null);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -41,8 +40,11 @@ const NavBar = () => {
   };
 
   const handleSubmitEmail = (e) => {
-    e.preventDefault();
-    console.log("Email submitted");
+    const myElement = emailRef.current;
+    if (myElement) {
+      // Do something with the element
+      console.log(myElement.querySelector('div[div]'));
+    }
   };
 
   const logOut = () => {
@@ -143,6 +145,7 @@ const NavBar = () => {
             type="email"
             fullWidth
             variant="standard"
+            ref={emailRef}
           />
         </DialogContent>
         <DialogActions>

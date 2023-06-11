@@ -26,6 +26,16 @@ function Login() {
     })
   }
 
+  const APICall = (configObject)=>{
+    return new Promise((resolve,reject)=>{
+      fetch(configObject.url,{
+        method:configObject.method?configObject.method:'GET',
+        body:configObject.body?JSON.stringify(configObject.body):null,
+        headers:configObject.headers?configObject.headers:{},
+      }).then((response)=>resolve(response.json()))
+    })
+  }
+
   const handleSubmit = async(e)=>{
     e.preventDefault();
     const objectBody = {
@@ -44,7 +54,26 @@ function Login() {
       const accessToken = responseData['access-token']
       addCookies(accessToken)
       //navigating after successful login
-      navigate('/grassDashboard');
+      // http://localhost:8081/user
+      const configObject1 = {
+        url:"http://localhost:8081/user",
+        method:'GET',
+        headers:{'Content-Type':'application/json','Authorization': accessToken},
+        // body:objectBody
+      }
+
+      var loggedUser = await APICall(configObject1)
+      console.log(loggedUser)
+      if(loggedUser.data.role=="TEAM LEAD"){
+        navigate("/teamleadhome")
+        return
+      }else if(loggedUser.data.role=="GRASSROOT"){
+        navigate("/grassDashboard")
+        return
+      }else if(loggedUser.data.role=="OPERATION"){
+        navigate('/operationshome');
+        return
+      } 
     }else{
       alert("Invalid credentials")
     }

@@ -21,6 +21,7 @@
     "jqwidgets-framework": "^16.0.0",
     "jqwidgets-scripts": "^16.0.0",
     "material-react-table": "^1.12.0",
+    "nodemailer": "^6.9.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
@@ -34,7 +35,8 @@
     "rsuite": "^5.35.0",
     "styled-components": "^5.3.11",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "winston": "^3.9.0"
   },
   "scripts": {
     "start": "react-scripts start",
