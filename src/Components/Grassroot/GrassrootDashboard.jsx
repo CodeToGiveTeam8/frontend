@@ -44,6 +44,26 @@ const GrassrootDashboard = () => {
     })
   }
 
+  const timeoutPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("time's up");
+    }, 10*1000);
+  });
+
+  const sendRequest = (promise1,promise2)=>{
+    return new Promise((resolve,reject)=>{
+      Promise.race([promise1,promise2]).then((value)=>{
+        resolve(value);
+      })
+    })
+  }
+
+  const getCachedValue = (key)=>{
+    return new Promise(async(resolve,reject)=>{
+      resolve(localStorage.getItem(key))
+    })
+  }
+
   const handleRowClick = (id) => {
     handleNavigation(id)
   };
@@ -82,7 +102,15 @@ const GrassrootDashboard = () => {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await APICall(configObject)
+        const responseData = await sendRequest(APICall(configObject),timeoutPromise);
+        if(responseData === "time's up"){
+          if(await getCachedValue("home")){
+            responseData = JSON.parse(await getCachedValue("home"))
+          }else{
+            throw new Error("Network Error");
+          }
+        }
+        localStorage.setData("home",JSON.stringify(responseData));
         const data = await responseData[1]
         // console.log(responseData)
         // console.log(data.data)
@@ -100,7 +128,15 @@ const GrassrootDashboard = () => {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await APICall(configObject)
+        const responseData = await sendRequest(APICall(configObject),timeoutPromise);
+        if(responseData === "time's up"){
+          if(await getCachedValue("user")){
+            responseData = JSON.parse(await getCachedValue("user"))
+          }else{
+            throw new Error("Network Error");
+          }
+        }
+        localStorage.setData("user",JSON.stringify(responseData));
         const data = await responseData[1]
         // console.log(responseData)
         // console.log(data)
