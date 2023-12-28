@@ -21,7 +21,7 @@ function App() {
      
       <BrowserRouter>
           <Routes>
-          {/* not sure about the which page is home page */}
+         
             <Route exact path="/" element={<Home />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/register" element={<Register />} />
