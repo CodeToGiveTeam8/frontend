@@ -1,3 +1,4 @@
+
 import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSSstyles/GDetails.css';
@@ -224,6 +225,14 @@ function GDetails() {
     navigate('/status-update');
   };
 
+  const sendRequest = (promise1,promise2)=>{
+    return new Promise((resolve,reject)=>{
+      Promise.race([promise1,promise2]).then((value)=>{
+        resolve(value);
+      })
+    })
+  }
+
   const APICall = (configObject)=>{
     return new Promise((resolve,reject)=>{
       fetch(configObject.url,{
@@ -231,6 +240,18 @@ function GDetails() {
         body:configObject.body?JSON.stringify(configObject.body):null,
         headers:configObject.headers?configObject.headers:{},
       }).then((response)=>resolve([response.status,response.json()]))
+    })
+  }
+
+  const timeoutPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("time's up");
+    }, 10*1000);
+  });
+
+  const getCachedValue = (key)=>{
+    return new Promise(async(resolve,reject)=>{
+      resolve(localStorage.getItem(key))
     })
   }
 
@@ -244,7 +265,15 @@ function GDetails() {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const res = await APICall(configObject)
+        const res = await sendRequest(APICall(configObject),timeoutPromise)
+        if(res === "time's up"){
+          if(await getCachedValue("r_data")){
+            res = JSON.parse(await getCachedValue("r_data"))
+          }else{
+            throw new Error("Network Error");
+          }
+        }
+        await localStorage.setItem("r_data",JSON.stringify(res))
         const responseData = await res[1]
         const data = responseData['data']
         console.log(data)
@@ -314,7 +343,16 @@ function GDetails() {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await APICall(configObject)
+        const responseData = await sendRequest(APICall(configObject),timeoutPromise);
+        
+        if(responseData === "time's up"){
+          if(await getCachedValue("image_link")){
+            responseData = JSON.parse(await getCachedValue("image_link"))
+          }else{
+            throw new Error("Network Error");
+          }
+        }
+        await localStorage.setItem("image_link",JSON.stringify(responseData));
         // console.log(responseData)
         const res_data = await responseData[1]
         setImageLink(res_data.link)
@@ -331,8 +369,17 @@ function GDetails() {
           method:'GET',
           headers:{'Content-Type':'application/json','Authorization': token},
         }
-        const responseData = await APICall(configObject)
-        const res_data = await responseData[1]
+        const responseData = await sendRequest(APICall(configObject),timeoutPromise);
+        if(responseData === "time's up"){
+          if(await getCachedValue("childDetails")){
+            responseData = JSON.stringify(await getCachedValue("childDetails"))
+          }else{
+            throw new Error("Network Error");
+          }
+        }
+        await localStorage.setItem("childDetails",JSON.stringify(responseData));
+        const res_data = await responseData[1];
+        
         setChildID(res_data.data.childId)
         setChildName(res_data.data.name)
         setDOB(res_data.data.dob)
